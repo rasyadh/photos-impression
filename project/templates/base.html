@@ -1,0 +1,83 @@
+<html>
+
+<head>
+    <title>{{ title }} | Impresi Foto</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Facial Expression" />
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/semantic.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/app.css') }}" />
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <header class="ui blue inverted vertical secondary top sidebar menu">
+        <div class="ui container">
+            <a class="item header" href="/">
+                Impresi Foto
+            </a>
+            <a class="item" href="/main_detect">
+                Deteksi Ekspresi
+            </a>
+            <a class="item" href="/photos">
+                Foto Percobaan
+            </a>
+            <a class="item" href="/results">
+                Hasil Percobaan
+            </a>
+        </div>
+    </header>
+
+    <div class="pusher">
+
+        <!-- Header -->
+        <header class="ui blue inverted borderless secondary menu">
+            <div class="ui container">
+                <a class="toc item">
+                    <i class="sidebar icon"></i>
+                </a>
+                <a class="item header" href="/">
+                    Impresi Foto
+                </a>
+                <div class="right item">
+                    <a class="item" href="/main_detect">
+                        Deteksi Ekspresi
+                    </a>
+                    <a class="item" href="/photos">
+                        Foto Percobaan
+                    </a>
+                    <a class="item" href="/results">
+                        Hasil Percobaan
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        {% block content %} {% endblock %}
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="ui grey inverted borderless secondary menu">
+                <div class="ui container">
+                    <div class="item">
+                        &copy; 2017, Impresi Foto
+                    </div>
+                    <div class="right item">
+                        <div class="item">
+                            Rasyadh Abdul Aziz
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{url_for('static', filename='js/semantic.min.js') }}"></script>
+    <script src="{{url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>

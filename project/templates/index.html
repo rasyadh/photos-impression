@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block content %}
+
+<main class="main">
+    <div class="ui center aligned container">
+        <div class="hero">
+            <h1>Photo Impression</h1>
+            <p>Analisa Perubahan Ekspresi Wajah Berdasarkan Impresi Pada Foto</p>
+        </div>
+        <div class="main-content">
+            <div class="ui stackable link centered cards">
+                <a class="raised card" href="/main_detect">
+                    <div class="content">
+                        <div class="header">
+                            Deteksi Ekspresi
+                        </div>
+                        <div class="description">
+                            Mendeteksi perubahan ekspresi wajah berdasarkan foto yang ditampilakan.
+                        </div>
+                    </div>
+                </a>
+                <a class="raised card" href="/photos">
+                    <div class="content">
+                        <div class="header">
+                            Album Foto
+                        </div>
+                        <div class="description">
+                            Kumpulan foto yang akan ditampilkan pada deteksi ekspresi.
+                        </div>
+                    </div>
+                </a>
+                <a class="raised card" href="/results">
+                    <div class="content">
+                        <div class="header">
+                            Hasil Ekspresi
+                        </div>
+                        <div class="description">
+                            Menampilkan hasil dari deteksi ekspresi yang telah dilakukan.
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

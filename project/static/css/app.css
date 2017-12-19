@@ -1,0 +1,67 @@
+/** Global **/
+.main {
+    padding: 10px;
+}
+
+.hero {
+    margin-bottom: 30px;
+}
+
+/** Header **/
+.hidden.menu {
+    display: none;
+}
+
+.ui.secondary.menu .toc.item {
+    display: none;
+}
+
+/** Facial Expression **/
+
+/** Photos **/
+
+/** Result **/
+
+/** Footer **/
+
+/** Slideshow **/
+.nav-slideshow {
+    margin-top: 10px;
+}
+
+.video_frame {
+    width: 160px;
+    height: 120px;
+    border: 1px solid black;
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+}
+
+/* Fading animation */
+.fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+  
+@-webkit-keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+}
+  
+@keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+}
+
+@media only screen and (max-width: 700px) {
+    .ui.secondary.menu .right.item {
+        display: none;
+    }
+
+    .ui.secondary.menu .toc.item {
+        display: block;
+    }
+}

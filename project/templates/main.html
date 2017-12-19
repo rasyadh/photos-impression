@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block content %}
+
+<main class="main">
+    <div class="ui center aligned container">
+        <div class="main-content">
+            <div class="image-slide fade">
+                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img1.jpg') }}" />
+            </div>
+            <div class="image-slide fade" id="img-slide">
+                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img2.jpg') }}" />
+            </div>
+            <div class="image-slide fade" id="img-slide">
+                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img3.jpg') }}" />
+            </div>
+
+            <div class="nav-slideshow">
+                <div class="ui text center aligned container">
+                    <button class="ui primary button" id="next" onclick="nextSlide(1)">
+                        &#10095;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img class="video_frame" src="{{ url_for('feed_stream') }}" />
+</main>
+
+<script src="{{url_for('static', filename='js/whammy.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/slideshow.js') }}"></script> 
+
+{% endblock %}
