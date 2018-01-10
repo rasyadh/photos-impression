@@ -1,24 +1,58 @@
 import numpy as np
-from subspace import pca, process_pca
-from util import normalize, asRowMatrix, read_images, get_face, parse_to_row_matrix
+from subspace import pca, project, reconstruct
+from util import normalize, asRowMatrix, read_images
 from visual import subplot
 
 # set numpy array print option
-# np.set_printoptions(threshold=100000)
+np.set_printoptions(threshold=10000000000000)
 
 # read image
-IMAGE_PATH = 'data/1.pgm'
-matrix = get_face(IMAGE_PATH, sz=100)
+IMAGE_PATH = '../att_faces_tes'
+[X,y] = read_images(IMAGE_PATH, 40)
 
-print(parse_to_row_matrix(matrix))
+# Try to parse X to row matrix
+rowX = asRowMatrix(X)
+indeks = 1
+print('As Row Matrix')
+for i in rowX:
+    print('indeks', indeks)
+    print(i)
+    print()
+    indeks = indeks + 1
 print()
+
 # perform pca
-[eigenvalues, eigenvectors, mean] = process_pca(parse_to_row_matrix(matrix))
+[eigenvalues, eigenvectors, mu] = pca(rowX, y)
+print("eigenvalues : ")
+print(eigenvalues)
+print()
+print("eigenvectors :")
+print(len(eigenvectors))
+print(eigenvectors)
+print()
 
-#[eigenvalues, eigenvectors, mean] = pca(parse_to_row_matrix(matrix), index)
 
-# print("eigenvalues :", eigenvalues)
-# print()
-# print("eigenvectors :", eigenvectors)
-# print()
-# print("mean :", mean)
+import matplotlib.cm as cm
+
+# turn the first (at most) 16 eigenvectors into grayscale
+# images (note: eigenvectors are stored by column!)
+E = []
+for i in range(min(len(X), 10)):
+    e = eigenvectors[:,i].reshape(X[0].shape)
+    E.append(normalize(e,0,255))
+# plot them and store the plot to "python_eigenfaces.png"
+subplot(title="Eigenfaces AT&T Facedatabase", images=E, rows=5, cols=5, sptitle="Eigenface", colormap=cm.jet, filename="python_pca_eigenfaces.png")
+
+
+# reconstruction steps
+steps=[i for i in range(0, min(len(X), 100), 10)]
+E = []
+for i in range(min(len(steps), 10)):
+    numEvs = steps[i]
+    P = project(eigenvectors[:,0:numEvs], X[0].reshape(1,-1), mu)
+    R = reconstruct(eigenvectors[:,0:numEvs], P, mu)
+    # reshape and append to plots
+    R = R.reshape(X[0].shape)
+    E.append(normalize(R,0,255))
+# plot them and store the plot to "python_reconstruction.pdf"
+subplot(title="Reconstruction AT&T Facedatabase", images=E, rows=5, cols=5, sptitle="Eigenvectors", sptitles=steps, colormap=cm.gray, filename="python_pca_reconstruction.png")

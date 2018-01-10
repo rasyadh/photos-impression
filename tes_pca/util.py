@@ -2,19 +2,7 @@ import os, sys
 import numpy as np
 import cv2
 
-def normalize(X, low, high, dtype=None):
-	X = np.asarray(X)
-	minX, maxX = np.min(X), np.max(X)
-	# normalize to [0...1].	
-	X = X - float(minX)
-	X = X / float((maxX - minX))
-	# scale to [low...high].
-	X = X * (high-low)
-	X = X + low
-	if dtype is None:
-		return np.asarray(X)
-	return np.asarray(X, dtype=dtype)
-
+# Custom def
 def get_face(path, sz=None):
     matrix = []
 
@@ -46,29 +34,67 @@ def parse_to_row_matrix(matrix):
         row_matrix = np.vstack((row_matrix, np.asarray(row).reshape(1,-1)))
     return row_matrix
 
+# Original
 
-# for AT T dataset
+def normalize(X, low, high, dtype=None):
+	X = np.asarray(X)
+	minX, maxX = np.min(X), np.max(X)
+	# normalize to [0...1].	
+	X = X - float(minX)
+	X = X / float((maxX - minX))
+	# scale to [low...high].
+	X = X * (high-low)
+	X = X + low
+	if dtype is None:
+		return np.asarray(X)
+	return np.asarray(X, dtype=dtype)
+
 def read_images(path, sz=None):
 	c = 0
-	X,y = [], []
+	X,Y = [], []
 	for dirname, dirnames, filenames in os.walk(path):
 		for subdirname in dirnames:
 			subject_path = os.path.join(dirname, subdirname)
 			for filename in os.listdir(subject_path):
 				try:
 					im = cv2.imread(os.path.join(subject_path, filename))
-					im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-					# resize to given size (if given)
-					if (sz is not None):
-						im = im.resize(sz, Image.ANTIALIAS)
-					X.append(np.asarray(im, dtype=np.uint8))
-					y.append(c)
+					gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+
+					face_cascade = cv2.CascadeClassifier('../project/cascade/haarcascade_frontalface_default.xml')
+
+					faces = face_cascade.detectMultiScale(
+						gray,
+						scaleFactor=1.5,
+						minNeighbors=5,
+						minSize=(50, 50),
+						flags=cv2.CASCADE_SCALE_IMAGE
+					)
+
+					for (x, y, w, h) in faces:
+						face = gray[y: (y + h), x: (x + w)]
+						print(face.shape)
+						if (sz is not None):
+							# resize to given size (if given)
+							face = cv2.resize(face, (sz, sz))
+
+					# X.append(np.asarray(face, dtype=np.uint8))
+					X.append(face)
+					Y.append(c)
 				except IOError:
 					print("I/O error({0}): {1}".format(errno, strerror))
 				except:
 					print("Unexpected error:", sys.exc_info()[0])
 					raise
 			c = c+1
+	print('read image...')
+	print('y :', y)
+	print('X : ')
+	indeks = 1
+	for i in X:
+		print('image', indeks)
+		print(i)
+		print()
+		indeks = indeks + 1
 	return [X,y]
 
 def asRowMatrix(X):
