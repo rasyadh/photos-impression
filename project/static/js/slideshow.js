@@ -1,28 +1,27 @@
-var slideIndex = 1;
-showSlides(slideIndex);
+var slideIndex = 0;
+carousel();
 
-function nextSlide(index) {
-    showSlides(slideIndex += index);
-}
+function carousel() {
+    var slide = document.getElementsByClassName("image-slide");
 
-function showSlides(slideIndex) {
-    var i;
-    var slides = document.getElementsByClassName("image-slide");
-    var next = document.getElementById("next");
-
-    if (slideIndex == slides.length) {
-        next.innerHTML = "Finish";
+    for (var i = 0; i < slide.length; i++) {
+        slide[i].style.display = "none";
     }
 
-    if (slideIndex > slides.length) {
-        next.classList.add('disabled');
-        alert("Facial expression detection complete");
-        window.location.href = '/detect_result';
+    slideIndex++;
+    if (slideIndex <= slide.length) {
+        slide[slideIndex - 1].style.display = "block";
+        setTimeout(carousel, 5000);
     }
-
-    for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";  
+    else {
+        swal({
+            title: "Complete",
+            text: "Facial expression detection",
+            icon: "success",
+            button: "Next",
+        })
+        .then((value) => {
+            window.location.href = '/detect_result';  
+        });
     }
-
-    slides[slideIndex-1].style.display = "block"; 
 }
