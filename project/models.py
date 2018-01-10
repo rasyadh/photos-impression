@@ -10,7 +10,7 @@ class Expression(db.Model):
     expression_name = db.Column(db.String(20), nullable=False)
     expression_feature = db.Column(db.String(100), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    updated_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def __init__(self, expression_name=None):
         self.expression_name = expression_name
@@ -28,12 +28,14 @@ class Photos(db.Model):
     comment_impression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    def __init__(self, photo_name=None, photo_url=None):
+    def __init__(self, photo_name=None, photo_url=None, source_url=None, comment_impression=None):
         self.photo_name = photo_name
         self.photo_url = photo_url
+        self.source_url = source_url
+        self.comment_impression = comment_impression
     
     def get_id_photo(self):
-        return self.id
+        return self.id_photo
 
     def __repr__(self):
         return '<Photos {0}>'.format(self.photo_name)
@@ -58,6 +60,12 @@ class Detection(db.Model):
     id_photo = db.Column(db.Integer, db.ForeignKey('photos.id_photo'))
     initial_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
     result_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
+
+    def __init__(self, id_result_detection=None, id_photo=None, initial_expression=None, result_expression=None):
+        self.id_result_detection = id_result_detection
+        self.id_photo = id_photo
+        self.initial_expression = initial_expression
+        self.result_expression = result_expression
 
     def __repr__(self):
         return '<Detection {0}'.format(self.id_detection)
