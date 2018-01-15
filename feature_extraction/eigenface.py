@@ -16,6 +16,11 @@ np.set_printoptions(threshold=1000000)
 # perform a full pca
 [D, W, mu] = pca(asRowMatrix(X), y)
 
+print()
+print(D)
+print()
+print(len(W))
+
 import matplotlib.cm as cm
 
 # turn the first (at most) 16 eigenvectors into grayscale

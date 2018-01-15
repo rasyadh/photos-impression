@@ -50,20 +50,19 @@ def normalize(X, low, high, dtype=None):
 	return np.asarray(X, dtype=dtype)
 
 def read_images(path, sz=None):
-	c = 0
-	X,Y = [], []
+	print('read images...')
+	X, Y, c = [], [], 0
+	face_cascade = cv2.CascadeClassifier('../project/cascade/haarcascade_frontalface_default.xml')
+
 	for dirname, dirnames, filenames in os.walk(path):
 		for subdirname in dirnames:
 			subject_path = os.path.join(dirname, subdirname)
 			for filename in os.listdir(subject_path):
 				try:
-					im = cv2.imread(os.path.join(subject_path, filename))
-					gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-
-					face_cascade = cv2.CascadeClassifier('../project/cascade/haarcascade_frontalface_default.xml')
+					im = cv2.imread(os.path.join(subject_path, filename), 0)
 
 					faces = face_cascade.detectMultiScale(
-						gray,
+						im,
 						scaleFactor=1.5,
 						minNeighbors=5,
 						minSize=(50, 50),
@@ -71,33 +70,31 @@ def read_images(path, sz=None):
 					)
 
 					for (x, y, w, h) in faces:
-						face = gray[y: (y + h), x: (x + w)]
-						print(face.shape)
+						face = im[y: (y + h), x: (x + w)]
+						print(face.shape, ' ', filename)
 						if (sz is not None):
 							# resize to given size (if given)
 							face = cv2.resize(face, (sz, sz))
 
-					# X.append(np.asarray(face, dtype=np.uint8))
-					X.append(face)
+					X.append(np.asarray(face, dtype=np.uint8))
 					Y.append(c)
+					# face = None
+					
 				except IOError:
 					print("I/O error({0}): {1}".format(errno, strerror))
 				except:
 					print("Unexpected error:", sys.exc_info()[0])
 					raise
 			c = c+1
-	print('read image...')
-	print('y :', y)
-	print('X : ')
-	indeks = 1
-	for i in X:
-		print('image', indeks)
-		print(i)
-		print()
-		indeks = indeks + 1
+			
+	print('length X : ', len(X))
+	print('Y :', Y) 
+	print()
 	return [X,y]
 
 def asRowMatrix(X):
+	print('parse to row matrix...')
+	print()
 	if len(X) == 0:
 		return np.array([])
 	mat = np.empty((0, X[0].size), dtype=X[0].dtype)

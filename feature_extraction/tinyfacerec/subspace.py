@@ -18,14 +18,8 @@ def pca(X, y, num_components=10):
 	print()
 	if (num_components <= 0) or (num_components>n):
 		num_components = n
-	print('before :', X)
-	print()
 	mu = X.mean(axis=0)
-	print('mean :', mu)
-	print()
 	X = X - mu
-	print('after :', X)
-	print()
 	if n>d:
 		C = np.dot(X.T,X)
 		[eigenvalues,eigenvectors] = np.linalg.eigh(C)

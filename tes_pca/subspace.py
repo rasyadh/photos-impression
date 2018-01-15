@@ -46,6 +46,7 @@ def reconstruct(W, Y, mu=None):
 		return np.dot(Y,W.T)
 	return np.dot(Y, W.T) + mu
 
+# Original
 def pca(X, y, num_components=0):
 	[n,d] = X.shape
 	if (num_components <= 0) or (num_components>n):
@@ -53,9 +54,6 @@ def pca(X, y, num_components=0):
 
 	# Calculate Mean
 	mu = X.mean(axis=0)
-	print('Mean : ')
-	print(mu)
-	print()
 
 	# Calculate Covariance Matrix
 	X = X - mu
@@ -70,6 +68,7 @@ def pca(X, y, num_components=0):
 			eigenvectors[:,i] = eigenvectors[:,i]/np.linalg.norm(eigenvectors[:,i])
 	# or simply perform an economy size decomposition
 	# eigenvectors, eigenvalues, variance = np.linalg.svd(X.T, full_matrices=False)
+
 	# sort eigenvectors descending by their eigenvalue
 	idx = np.argsort(-eigenvalues)
 	eigenvalues = eigenvalues[idx]

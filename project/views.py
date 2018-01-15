@@ -38,3 +38,23 @@ def photos():
 @app.route('/results/')
 def result():
     return render_template('results.html', title="Hasil Percobaan")
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        try:
+            user = Admin.query.filter_by(username=username, password=password).first()
+            if user is not None:
+                return redirect('/admin/')
+            else:
+                return render_template('login.html', title="Login Admin")
+        except:
+            return 'error query'
+    return render_template('login.html', title="Login Admin")
+
+@app.route('/admin/')
+def admin():
+    return render_template('admin.html', title="Admin Page")
