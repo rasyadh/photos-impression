@@ -59,9 +59,15 @@
                     <a class="item" href="/results">
                         Hasil Percobaan
                     </a>
+                    {% if session['loggedin'] %}
+                    <a class="item" href="/admin">
+                        Admin
+                    </a>
+                    {% else %}
                     <a class="item" href="/login">
                         Login
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </header>

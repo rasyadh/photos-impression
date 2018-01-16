@@ -1,0 +1,77 @@
+{% extends 'admin/base_admin.html' %} {% block content %}
+
+<main class="main">
+    <div class="ui container">
+        <div class="ui center aligned container hero">
+            <h1>Koleksi Foto</h1>
+            <p>Foto berdasarkan impresi</p>
+        </div>
+        <div class="ui container">
+            <button class="ui primary button" id="new-foto">Tambah Foto Baru</button>
+            <br>
+            <br>
+            <div class="ui four cards">
+                {% for photo in range(0, 8) %}
+                <a class="card" id="{{ photo }}">
+                    <div class="image">
+                        <img src="{{ url_for('static', filename='image/img1.jpg') }}" alt="images">
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            Photo {{ photo }}
+                        </div>
+                        <div class="meta">
+                            Sumber {{ photo }}
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <p>
+                            <i class="users icon"></i>Impresi {{ photo }}
+                        </p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="ui modal add-photo">
+    <i class="close icon"></i>
+    <div class="header">
+        Tambah Foto
+    </div>
+    <div class="content">
+        <form class="ui form" method="post">
+            <div class="field">
+                <label for="name">Nama Foto</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="field">
+                <label for="source">URL Foto</label>
+                <input type="text" id="source" name="source" required>
+            </div>
+            <div class="field">
+                <label for="impression">Impresi Foto</label>
+                <select class="ui dropdown" name="impression" id="impression" required>
+                    <value="2">Senang</option>
+                    <option value="3">Sedih</option>
+                    <option value="4">Terkejut</option>
+                </select>
+            </div>
+            <input class="ui fluid primary button" type="submit" name="add-photo" id="add-photo" value="Tambahkan Foto">
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $('.ui.dropdown').dropdown();
+
+        $('#new-foto').click(function() {
+            $('.ui.modal.add-photo').modal('show');
+        });
+    });
+</script>
+
+{% endblock %}

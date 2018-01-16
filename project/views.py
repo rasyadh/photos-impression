@@ -41,20 +41,37 @@ def result():
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    if session.get('loggedin'):
+        return redirect(url_for('admin'))
+    else:
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
 
-        try:
-            user = Admin.query.filter_by(username=username, password=password).first()
-            if user is not None:
-                return redirect('/admin/')
-            else:
-                return render_template('login.html', title="Login Admin")
-        except:
-            return 'error query'
-    return render_template('login.html', title="Login Admin")
+            try:
+                user = Admin.query.filter_by(username=username, password=password).first()
+                if user is not None:
+                    session['loggedin'] = username
+                    return redirect(url_for('admin'))
+                else:
+                    return render_template('login.html', title="Login Admin")
+            except:
+                return 'error query'
+        return render_template('login.html', title="Login Admin")
+
+@app.route('/logout/')
+def logout():
+    session.pop('loggedin', None)
+    return redirect(url_for('index'))
 
 @app.route('/admin/')
 def admin():
-    return render_template('admin.html', title="Admin Page")
+    if session.get('loggedin'):
+        print('masuk')
+        return render_template('admin/admin.html', title="Admin Page")
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/admin/photos/')
+def photos_collection():
+    return render_template('admin/photos_collection.html', title="Koleksi Foto")
