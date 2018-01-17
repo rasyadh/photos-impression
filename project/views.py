@@ -102,14 +102,7 @@ def photos_collection():
         except Exception as e:
             print('error query photos')
             print(e)
-        # dummy data
-        tes = [
-            { 'index': 1, 'url': 'image/img1.jpg', 'impresi': 'happy' },
-            { 'index': 2, 'url': 'image/img2.jpg', 'impresi': 'sad' },
-            { 'index': 3, 'url': 'image/img3.jpg', 'impresi': 'surprise' },
-            { 'index': 4, 'url': 'image/img1.jpg', 'impresi': 'happy' },
-        ]
-        return render_template('admin/photos_collection.html', title="Koleksi Foto", tes=tes, photos=result)
+        return render_template('admin/photos_collection.html', title="Koleksi Foto", photos=result)
     else:
         return redirect(url_for('login'))
 

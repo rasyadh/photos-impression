@@ -111,7 +111,6 @@
 <script>
     // parse response to JSON
     var photos = JSON.parse('{{ photos | tojson | safe }}');
-    console.log(photos);
 
     // init tabs indicator
     var tab_index = ['all', 'happy', 'sad', 'surprise'];
