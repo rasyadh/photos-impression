@@ -4,6 +4,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from project import app
 from project.core import db
+from project.models import *
 
 migrate = Migrate(app,db)
 manager = Manager(app)
@@ -17,6 +18,12 @@ def createdb():
 @manager.command
 def dropdb():
 	db.drop_all()
+
+@manager.command
+def createadmin():
+	admin = Admin(username='admin', password='admin123')
+	db.session.add(admin)
+	db.session.commit()
 
 if __name__ == '__main__':
 	manager.run()

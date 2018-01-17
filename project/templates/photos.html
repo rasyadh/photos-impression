@@ -9,7 +9,7 @@
                 Foto Percobaan
             </h1>
             <h2 class="subtitle">
-                Koleksi foto yang digunakan untuk percobaan deteksi ekspresi wajah.
+                Foto yang digunakan untuk percobaan deteksi ekspresi wajah.
             </h2>
         </div>
     </div>
@@ -37,6 +37,15 @@
         <div class="columns is-multiline" id="photos"></div>
     </div>
 </section>
+
+<!-- modal photo -->
+<div class="modal" id="modal-photo">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <figure class="image" id="photo-full"></figure>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
 
 <script>
     var tes = JSON.parse('{{ tes | tojson | safe }}');
@@ -70,51 +79,64 @@
         if (tab_name == 'all') {
             for (var i = 0; i < tes.length; i++) {
                 $('#photos').append(`
-                    <div class="column is-3" id="` + tes[i].index + `">
-                        <div class="card">
-                            <div class="card-image">
-                                <figure class="image">
-                                    <img src="/static/` + tes[i].url + `" alt="image">
-                                </figure>
-                            </div>
-                            <div class="card-content" style="padding: 1em;">
-                                <p>Nama Foto ` + tes[i].index + `</p>
-                                <p>Source Foto ` + tes[i].index + `</p>
-                            </div>
-                            <footer class="card-footer">
-                                <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
-                            </footer>
+                        <div class="column is-3">
+                            <a onclick="show_photo('` + tes[i].url + `')">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <figure class="image">
+                                            <img src="/static/` + tes[i].url + `" alt="image">
+                                        </figure>
+                                    </div>
+                                    <div class="card-content" style="padding: 1em;">
+                                        <p>Nama Foto ` + tes[i].index + `</p>
+                                        <p>Source Foto ` + tes[i].index + `</p>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
+                                    </footer>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                `);
+                    `);
             }
         }
         else {
             for (var i = 0; i < tes.length; i++) {
                 if (tes[i].impresi == tab_name) {
                     $('#photos').append(`
-                        <div class="column is-3" id="` + tes[i].index + `">
-                            <div class="card">
-                                <div class="card-image">
-                                    <figure class="image">
-                                        <img src="/static/` + tes[i].url + `" alt="image">
-                                    </figure>
-                                </div>
-                                <div class="card-content" style="padding: 1em;">
-                                    <p>Nama Foto ` + tes[i].index + `</p>
-                                    <p>Source Foto ` + tes[i].index + `</p>
-                                </div>
-                                <footer class="card-footer">
-                                    <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
-                                </footer>
+                            <div class="column is-3">
+                                <a onclick="show_photo('` + tes[i].url + `')">
+                                    <div class="card">
+                                        <div class="card-image">
+                                            <figure class="image">
+                                                <img src="/static/` + tes[i].url + `" alt="image">
+                                            </figure>
+                                        </div>
+                                        <div class="card-content" style="padding: 1em;">
+                                            <p>Nama Foto ` + tes[i].index + `</p>
+                                            <p>Source Foto ` + tes[i].index + `</p>
+                                        </div>
+                                        <footer class="card-footer">
+                                            <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
+                                        </footer>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                    `);
+                        `);
                 }
             }
         }
     }
 
+    $(() => {
+        show_photo = (url => {
+            $('#photo-full').empty();
+            $('#modal-photo').addClass('is-active');
+            $('#photo-full').append(`<img src="/static/` + url + `" alt="image">`);
+        });
+        $('.modal-close').click(() => $('#modal-photo').removeClass('is-active'));
+        $('.modal-background').click(() => $('#modal-photo').removeClass('is-active'));
+    });
 </script>
 
 <!-- end yield content -->

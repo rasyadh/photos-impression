@@ -20,14 +20,20 @@
                 <form class="form" method="POST" action="{{ url_for('login') }}">
                     <div class="field">
                         <label class="label">Username</label>
-                        <div class="control">
-                            <input class="input" type="text" required name="username">
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" required name="username" autocomplete="false">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Password</label>
-                        <div class="control">
+                        <div class="control has-icons-left">
                             <input class="input" type="password" required name="password">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
                         </div>
                     </div>
                     <br>
