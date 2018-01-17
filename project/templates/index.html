@@ -1,46 +1,45 @@
+<!-- yield content -->
 {% extends 'base.html' %} {% block content %}
 
-<main class="main">
-    <div class="ui center aligned container">
-        <div class="hero">
-            <h1>Photo Impression</h1>
-            <p>Analisa Perubahan Ekspresi Wajah Berdasarkan Impresi Pada Foto</p>
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Impresi Foto
+            </h1>
+            <h2 class="subtitle">
+                Analisa Perubahan Ekspresi Wajah Berdasarkan Impresi Pada Foto
+            </h2>
         </div>
-        <div class="main-content">
-            <div class="ui stackable link centered cards">
-                <a class="raised card" href="/main_detect">
-                    <div class="content">
-                        <div class="header">
-                            Deteksi Ekspresi
-                        </div>
-                        <div class="description">
-                            Mendeteksi perubahan ekspresi wajah berdasarkan foto yang ditampilakan.
-                        </div>
-                    </div>
+    </div>
+</section>
+
+<!-- content -->
+<section class="section">
+    <div class="container">
+        <div class="columns has-text-centered">
+            <div class="column">
+                <a class="box" href="/main_detect">
+                    <p class="title is-4">Deteksi Ekspresi</p>
+                    <p>Mendeteksi perubahan ekspresi wajah berdasarkan foto yang ditampilakan.</p>
                 </a>
-                <a class="raised card" href="/photos">
-                    <div class="content">
-                        <div class="header">
-                            Album Foto
-                        </div>
-                        <div class="description">
-                            Kumpulan foto yang akan ditampilkan pada deteksi ekspresi.
-                        </div>
-                    </div>
+            </div>
+            <div class="column">
+                <a class="box" href="/photos">
+                    <p class="title is-4">Koleksi Foto</p>
+                    <p>Kumpulan foto yang akan ditampilkan pada deteksi ekspresi.</p>
                 </a>
-                <a class="raised card" href="/results">
-                    <div class="content">
-                        <div class="header">
-                            Hasil Percobaan
-                        </div>
-                        <div class="description">
-                            Menampilkan hasil dari percobaan deteksi ekspresi yang telah dilakukan.
-                        </div>
-                    </div>
+            </div>
+            <div class="column">
+                <a class="box" href="/results">
+                    <p class="title is-4">Hasil Percobaan</p>
+                    <p>Menampilkan hasil dari percobaan deteksi ekspresi yang telah dilakukan.</p>
                 </a>
             </div>
         </div>
     </div>
-</main>
+</section>
 
+<!-- end yield content -->
 {% endblock %}

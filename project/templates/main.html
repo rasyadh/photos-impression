@@ -1,23 +1,26 @@
+<!-- yield content -->
 {% extends 'base.html' %} {% block content %}
 
-<main class="main">
-    <div class="ui center aligned container">
+<!-- detect -->
+<section class="section">
+    <div class="container is-centered">
         <div class="main-content">
             <div class="image-slide fade" id="img-slide">
-                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img1.jpg') }}" />
+                <img class="image" src="{{ url_for('static', filename='image/img1.jpg') }}" />
             </div>
             <div class="image-slide fade" id="img-slide">
-                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img2.jpg') }}" />
+                <img class="image" src="{{ url_for('static', filename='image/img2.jpg') }}" />
             </div>
             <div class="image-slide fade" id="img-slide">
-                <img class="ui huge centered image" src="{{ url_for('static', filename='image/img3.jpg') }}" />
+                <img class="image" src="{{ url_for('static', filename='image/img3.jpg') }}" />
             </div>
         </div>
     </div>
 
     <img class="video_frame" src="{{ url_for('feed_stream') }}" />
-</main>
+</section>
 
-<script src="{{url_for('static', filename='js/slideshow.js') }}"></script> 
+<script src="{{url_for('static', filename='js/slideshow.js') }}"></script>
 
+<!-- end yield content -->
 {% endblock %}

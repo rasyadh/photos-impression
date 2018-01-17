@@ -1,23 +1,8 @@
 /** Global **/
-.main {
-    padding: 10px;
-}
-
-.login {
-    padding: 20px;
-}
-
-.hero {
-    margin-bottom: 30px;
-}
 
 /** Header **/
-.hidden.menu {
-    display: none;
-}
-
-.ui.secondary.menu .toc.item {
-    display: none;
+.navbar-is-medium {
+    min-height: 4.25rem;
 }
 
 /** Facial Expression **/
@@ -61,11 +46,7 @@
 }
 
 @media only screen and (max-width: 700px) {
-    .ui.secondary.menu .right.item {
-        display: none;
-    }
-
-    .ui.secondary.menu .toc.item {
-        display: block;
+    .navbar-is-medium {
+        min-height: 3.25rem;
     }
 }

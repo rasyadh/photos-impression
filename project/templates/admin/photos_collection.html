@@ -1,77 +1,121 @@
+<!-- yield content -->
 {% extends 'admin/base_admin.html' %} {% block content %}
 
-<main class="main">
-    <div class="ui container">
-        <div class="ui center aligned container hero">
-            <h1>Koleksi Foto</h1>
-            <p>Foto berdasarkan impresi</p>
-        </div>
-        <div class="ui container">
-            <button class="ui primary button" id="new-foto">Tambah Foto Baru</button>
-            <br>
-            <br>
-            <div class="ui four cards">
-                {% for photo in range(0, 8) %}
-                <a class="card" id="{{ photo }}">
-                    <div class="image">
-                        <img src="{{ url_for('static', filename='image/img1.jpg') }}" alt="images">
-                    </div>
-                    <div class="content">
-                        <div class="header">
-                            Photo {{ photo }}
-                        </div>
-                        <div class="meta">
-                            Sumber {{ photo }}
-                        </div>
-                    </div>
-                    <div class="extra content">
-                        <p>
-                            <i class="users icon"></i>Impresi {{ photo }}
-                        </p>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Koleksi Foto
+            </h1>
+            <h2 class="subtitle">
+                Koleksi foto berdasarkan impresinya.
+            </h2>
         </div>
     </div>
-</main>
+</section>
 
-<div class="ui modal add-photo">
-    <i class="close icon"></i>
-    <div class="header">
-        Tambah Foto
+<!-- photo collection -->
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-one-fifth">
+                <button class="button is-primary is-fullwidth" id="add-photo">Tambah Foto Baru</button>
+            </div>
+            <div class="column">
+                <div class="tabs">
+                    <ul>
+                        <li class="is-active">
+                            <a>Semua</a>
+                        </li>
+                        <li>
+                            <a>Bahagia</a>
+                        </li>
+                        <li>
+                            <a>Sedih</a>
+                        </li>
+                        <li>
+                            <a>Terkejut</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns is-multiline">
+            {% for i in range(0, 8) %}
+            <div class="column is-3">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image">
+                            <img src="{{ url_for('static', filename='image/img1.jpg') }}" alt="image">
+                        </figure>
+                    </div>
+                    <div class="card-content" style="padding: 1em;">
+                        <p>Nama Foto {{ i }}</p>
+                        <p>Source Foto {{ i }}</p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">Impresi {{ i }}</p>
+                    </footer>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    <div class="content">
-        <form class="ui form" method="post">
-            <div class="field">
-                <label for="name">Nama Foto</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="field">
-                <label for="source">URL Foto</label>
-                <input type="text" id="source" name="source" required>
-            </div>
-            <div class="field">
-                <label for="impression">Impresi Foto</label>
-                <select class="ui dropdown" name="impression" id="impression" required>
-                    <value="2">Senang</option>
-                    <option value="3">Sedih</option>
-                    <option value="4">Terkejut</option>
-                </select>
-            </div>
-            <input class="ui fluid primary button" type="submit" name="add-photo" id="add-photo" value="Tambahkan Foto">
-        </form>
+</section>
+
+<!-- modal add photo -->
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Tambah Foto Baru</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" action="">
+                <div class="field">
+                    <label class="label">Nama Foto</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="name">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">URL Foto</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="source">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Impresi</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select required name="impression">
+                                <option value="2">Bahagia</option>
+                                <option value="3">Sedih</option>
+                                <option value="4">Terkejut</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Tambahkan Foto" name="submit-photo">
+                    </div>
+                </div>
+            </form>
+        </section>
     </div>
 </div>
 
 <script>
-    $(function() {
-        $('.ui.dropdown').dropdown();
-
-        $('#new-foto').click(function() {
-            $('.ui.modal.add-photo').modal('show');
-        });
+    $(() => {
+        $('#add-photo').click(() => $('.modal').addClass('is-active'));
+        $('.delete').click(() => $('.modal.is-active').removeClass('is-active'));
     });
 </script>
 
+<!-- end yield content -->
 {% endblock %}

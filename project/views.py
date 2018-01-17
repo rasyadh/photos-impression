@@ -33,11 +33,19 @@ def feed_stream():
 
 @app.route('/photos/')
 def photos():
-    return render_template('photos.html', title="Foto Percobaan")
+    # dummy data
+    tes = [
+        { 'index': 1, 'url': 'image/img1.jpg', 'impresi': 'happy' },
+        { 'index': 2, 'url': 'image/img2.jpg', 'impresi': 'sad' },
+        { 'index': 3, 'url': 'image/img3.jpg', 'impresi': 'surprise' },
+        { 'index': 4, 'url': 'image/img1.jpg', 'impresi': 'happy' },
+    ]
+    return render_template('photos.html', title="Foto Percobaan", tes=tes)
 
 @app.route('/results/')
 def result():
-    return render_template('results.html', title="Hasil Percobaan")
+    results = None
+    return render_template('results.html', title="Hasil Percobaan", results=results)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -64,6 +72,7 @@ def logout():
     session.pop('loggedin', None)
     return redirect(url_for('index'))
 
+# Admin
 @app.route('/admin/')
 def admin():
     if session.get('loggedin'):

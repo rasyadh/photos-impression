@@ -8,76 +8,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Facial Expression" />
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/semantic.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bulma.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/app.css') }}" />
 
+    <script src="{{ url_for('static', filename='js/font-awesome-all.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/semantic.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sweetalert.min.js') }}"></script>
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <header class="ui blue inverted vertical secondary top sidebar menu">
-        <div class="ui container">
-            <a class="item header" href="/admin">
-                Admin Impresi Foto
-            </a>
-            <a class="item" href="/admin">
-                Feature Ekspresi
-            </a>
-            <a class="item" href="/admin/photos">
-                Koleksi Foto
-            </a>
-            <a class="item" href="/logout/">
-                Logout
-            </a>
-        </div>
-    </header>
-
-    <div class="pusher">
-
-        <!-- Header -->
-        <header class="ui blue inverted borderless secondary menu">
-            <div class="ui container">
-                <a class="toc item">
-                    <i class="sidebar icon"></i>
+    <!-- navbar -->
+    <nav class="navbar is-primary is-transparent navbar-is-medium">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/admin">
+                    <h1 class="title is-5 has-text-white">Admin Impresi Foto</h1>
                 </a>
-                <a class="item header" href="/admin">
-                    Admin Impresi Foto
-                </a>
-                <div class="right item">
-                    <a class="item" href="/admin">
-                        Feature Ekspresi
+                <div class="navbar-burger burger" data-target="menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="navbar-menu" id="menu">
+                <div class="navbar-end">
+                    <a class="navbar-item" href="/admin">
+                        Ekstraksi Fitur
                     </a>
-                    <a class="item" href="/admin/photos">
+                    <a class="navbar-item" href="/admin/photos">
                         Koleksi Foto
                     </a>
-                    <a class="item" href="/logout">
-                        Logout
+                    <a class="navbar-item" href="/admin">
+                        Hasil Percobaan
                     </a>
-                </div>
-            </div>
-        </header>
-
-        {% block content %} {% endblock %}
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="ui grey inverted borderless secondary menu">
-                <div class="ui container">
-                    <div class="item">
-                        &copy; 2017, Impresi Foto
-                    </div>
-                    <div class="right item">
-                        <div class="item">
-                            Rasyadh Abdul Aziz
-                        </div>
+                    <div class="navbar-item">
+                        <a class="button is-primary is-inverted is-outlined" href="/logout">
+                            Keluar
+                        </a>
                     </div>
                 </div>
             </div>
-        </footer>
-    </div>
+        </div>
+    </nav>
+
+    <!-- dynamic content -->
+    {% block content %} {% endblock %}
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        &copy; 2017, Admin Impresi Foto
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <p>
+                            <strong>Admin Impresi Foto</strong> by
+                            <a href="github.com/rasyadh">Rasyadh Abdul Aziz</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>

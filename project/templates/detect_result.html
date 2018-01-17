@@ -1,10 +1,21 @@
+<!-- yield content -->
 {% extends 'base.html' %} {% block content %}
 
-<main class="main">
-    <div class="ui center aligned container">
-        <h1>Hasil Deteksi Ekspresi</h1>
-        
-        <table class="ui table">
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Hasil Deteksi Ekspresi
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- result detection -->
+<section class="section">
+    <div class="container">
+        <table class="table is-hoverable is-fullwidth">
             <thead>
                 <tr>
                     <th>ID Foto</th>
@@ -19,6 +30,7 @@
             </tbody>
         </table>
     </div>
-</main>
+</section>
 
+<!-- end yield content -->
 {% endblock %}

@@ -1,11 +1,121 @@
+<!-- yield content -->
 {% extends 'base.html' %} {% block content %}
 
-<main class="main">
-    <div class="ui center aligned container">
-        <div class="hero">
-            <h1>Album Foto</h1>
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Foto Percobaan
+            </h1>
+            <h2 class="subtitle">
+                Koleksi foto yang digunakan untuk percobaan deteksi ekspresi wajah.
+            </h2>
         </div>
     </div>
-</main>
+</section>
 
+<!-- photo collection -->
+<section class="section">
+    <div class="container">
+        <div class="tabs is-centered">
+            <ul>
+                <li class="is-active">
+                    <a href="#all" onclick="tab('all')">Semua</a>
+                </li>
+                <li>
+                    <a href="#happy" onclick="tab('happy')">Bahagia</a>
+                </li>
+                <li>
+                    <a href="#sad" onclick="tab('sad')">Sedih</a>
+                </li>
+                <li>
+                    <a href="#surprise" onclick="tab('surprise')">Terkejut</a>
+                </li>
+            </ul>
+        </div>
+        <div class="columns is-multiline" id="photos"></div>
+    </div>
+</section>
+
+<script>
+    var tes = JSON.parse('{{ tes | tojson | safe }}');
+    var tab_index = ['all', 'happy', 'sad', 'surprise'];
+    var active_tab;
+    var tabs = $('li');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].className == 'is-active') {
+            active_tab = tab_index[i];
+            tab_detail(active_tab);
+        }
+    }
+
+    function tab(tab_name) {
+        if (active_tab == tab_name) {
+            active_tab = tab_name;
+            tab_detail(tab_name);
+        }
+        else {
+            tabs[tab_index.indexOf(active_tab)].className = '';
+            //tabs[active_tab].className = '';
+            active_tab = tab_name;
+            tabs[tab_index.indexOf(active_tab)].className = 'is-active';
+            //tabs[active_tab].className = 'is-active';
+            tab_detail(tab_name);
+        }
+    }
+
+    function tab_detail(tab_name) {
+        $('#photos').empty();
+        if (tab_name == 'all') {
+            for (var i = 0; i < tes.length; i++) {
+                $('#photos').append(`
+                    <div class="column is-3" id="` + tes[i].index + `">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image">
+                                    <img src="/static/` + tes[i].url + `" alt="image">
+                                </figure>
+                            </div>
+                            <div class="card-content" style="padding: 1em;">
+                                <p>Nama Foto ` + tes[i].index + `</p>
+                                <p>Source Foto ` + tes[i].index + `</p>
+                            </div>
+                            <footer class="card-footer">
+                                <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
+                            </footer>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+        else {
+            for (var i = 0; i < tes.length; i++) {
+                if (tes[i].impresi == tab_name) {
+                    $('#photos').append(`
+                        <div class="column is-3" id="` + tes[i].index + `">
+                            <div class="card">
+                                <div class="card-image">
+                                    <figure class="image">
+                                        <img src="/static/` + tes[i].url + `" alt="image">
+                                    </figure>
+                                </div>
+                                <div class="card-content" style="padding: 1em;">
+                                    <p>Nama Foto ` + tes[i].index + `</p>
+                                    <p>Source Foto ` + tes[i].index + `</p>
+                                </div>
+                                <footer class="card-footer">
+                                    <p class="card-footer-item">Impresi ` + tes[i].impresi + `</p>
+                                </footer>
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+        }
+    }
+
+</script>
+
+<!-- end yield content -->
 {% endblock %}

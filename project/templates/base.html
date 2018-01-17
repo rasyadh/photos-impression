@@ -8,88 +8,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Facial Expression" />
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/semantic.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bulma.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/app.css') }}" />
 
+    <script src="{{ url_for('static', filename='js/font-awesome-all.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/semantic.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sweetalert.min.js') }}"></script>
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <header class="ui blue inverted vertical secondary top sidebar menu">
-        <div class="ui container">
-            <a class="item header" href="/">
-                Impresi Foto
-            </a>
-            <a class="item" href="/main_detect">
-                Deteksi Ekspresi
-            </a>
-            <a class="item" href="/photos">
-                Foto Percobaan
-            </a>
-            <a class="item" href="/results">
-                Hasil Percobaan
-            </a>
-            <a class="item" href="/login">
-                Login
-            </a>
-        </div>
-    </header>
-
-    <div class="pusher">
-
-        <!-- Header -->
-        <header class="ui blue inverted borderless secondary menu">
-            <div class="ui container">
-                <a class="toc item">
-                    <i class="sidebar icon"></i>
+    <!-- navbar -->
+    <nav class="navbar is-info is-transparent navbar-is-medium">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <h1 class="title is-5 has-text-white">Impresi Foto</h1>
                 </a>
-                <a class="item header" href="/">
-                    Impresi Foto
-                </a>
-                <div class="right item">
-                    <a class="item" href="/main_detect">
+                <div class="navbar-burger burger" data-target="menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="navbar-menu" id="menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="/main_detect">
                         Deteksi Ekspresi
                     </a>
-                    <a class="item" href="/photos">
+                    <a class="navbar-item" href="/photos">
                         Foto Percobaan
                     </a>
-                    <a class="item" href="/results">
+                    <a class="navbar-item" href="/results">
                         Hasil Percobaan
                     </a>
-                    {% if session['loggedin'] %}
-                    <a class="item" href="/admin">
-                        Admin
-                    </a>
-                    {% else %}
-                    <a class="item" href="/login">
-                        Login
-                    </a>
-                    {% endif %}
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        {% if session['loggedin'] %}
+                        <a class="button is-info is-inverted is-outlined" href="/admin">
+                            Admin
+                        </a>
+                        {% else %}
+                        <a class="button is-info is-inverted is-outlined" href="/login">
+                            Masuk
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        {% block content %} {% endblock %}
+    <!-- dynamic content -->
+    {% block content %} {% endblock %}
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="ui grey inverted borderless secondary menu">
-                <div class="ui container">
-                    <div class="item">
+    <!-- footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
                         &copy; 2017, Impresi Foto
                     </div>
-                    <div class="right item">
-                        <div class="item">
-                            Rasyadh Abdul Aziz
-                        </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <p>
+                            <strong>Impresi Foto</strong> by
+                            <a href="github.com/rasyadh">Rasyadh Abdul Aziz</a>
+                        </p>
                     </div>
                 </div>
             </div>
-        </footer>
-    </div>
+        </div>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
