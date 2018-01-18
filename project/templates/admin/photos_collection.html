@@ -108,6 +108,51 @@
     </div>
 </div>
 
+<!-- modal edit photo -->
+<div class="modal" id="modal-edit-photo">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Edit Foto</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" action="" id="form_edit">
+                <input type="hidden" id="id_edit">
+                <div class="field">
+                    <figure class="image">
+                        <img src="" id="img_edit">
+                    </figure>
+                </div>
+                <div class="field">
+                    <label class="label">Source URL Foto</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="source" id="source_edit">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Impresi</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select required name="impression" id="impression_edit">
+                                <option value="2">Bahagia</option>
+                                <option value="3">Sedih</option>
+                                <option value="4">Terkejut</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Simpan Foto" name="save-photo">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
 <script>
     // parse response to JSON
     var photos = JSON.parse('{{ photos | tojson | safe }}');
@@ -141,35 +186,8 @@
     function tab_detail(tab_name) {
         $('#photos').empty();
         if (tab_name == 'all') {
-            for (var i = 0; i < photos.length; i++) {
-                $('#photos').append(`
-                    <div class="column is-3" id="photo-` + photos[i].id_photo + `">
-                        <div class="card">
-                            <div class="card-image">
-                                <a onclick="show_photo('` + photos[i].photo_url + `')">
-                                    <figure class="image">
-                                        <img src="` + photos[i].photo_url + `" alt="image">
-                                    </figure>
-                                </a>
-                            </div>
-                            <div class="card-content" style="padding: 1em;">
-                                <p>` + photos[i].photo_name + `</p>
-                                <p>` + photos[i].source_url + `</p>
-                                <p>` + photos[i].comment_impression + `</p>
-                            </div>
-                            <footer class="card-footer">
-                                <div class="card-footer-item">
-                                    <button class="button is-danger is-fullwidth" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</button
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                `);
-            }
-        }
-        else {
-            for (var i = 0; i < photos.length; i++) {
-                if (photos[i].comment_impression == tab_name) {
+            if (photos) {
+                for (var i = 0; i < photos.length; i++) {
                     $('#photos').append(`
                         <div class="column is-3" id="photo-` + photos[i].id_photo + `">
                             <div class="card">
@@ -183,23 +201,58 @@
                                 <div class="card-content" style="padding: 1em;">
                                     <p>` + photos[i].photo_name + `</p>
                                     <p>` + photos[i].source_url + `</p>
-                                    <p>` + photos[i].comment_impression + `</p>
+                                    <p>Impresi ` + photos[i].comment_impression + `</p>
                                 </div>
                                 <footer class="card-footer">
-                                    <div class="card-footer-item">
-                                        <button class="button is-danger is-fullwidth" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</button
-                                    </div>
+                                    <a class="card-footer-item" onclick="edit_photo(` + photos[i].id_photo + `)">Edit</a>
+                                    <a class="card-footer-item" style="color: #FF3860;" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</a>
                                 </footer>
                             </div>
                         </div>
                     `);
                 }
             }
+            else {
+                $('#photos').append('Belum ada foto yang ditambahkan');
+            }
+        }
+        else {
+            var checker = 0;
+            for (var i = 0; i < photos.length; i++) {
+                if (photos[i].comment_impression == tab_name) {
+                    checker = checker + 1;
+                    $('#photos').append(`
+                        <div class="column is-3" id="photo-` + photos[i].id_photo + `">
+                            <div class="card">
+                                <div class="card-image">
+                                    <a onclick="show_photo('` + photos[i].photo_url + `')">
+                                        <figure class="image">
+                                            <img src="` + photos[i].photo_url + `" alt="image">
+                                        </figure>
+                                    </a>
+                                </div>
+                                <div class="card-content" style="padding: 1em;">
+                                    <p>` + photos[i].photo_name + `</p>
+                                    <p>` + photos[i].source_url + `</p>
+                                    <p>Impresi ` + photos[i].comment_impression + `</p>
+                                </div>
+                                <footer class="card-footer">
+                                    <a class="card-footer-item" onclick="edit_photo(` + photos[i].id_photo + `)">Edit</a>
+                                    <a class="card-footer-item" style="color: #FF3860;" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</a>
+                                </footer>
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+            if (checker == 0) {
+                $('#photos').append('Belum ada foto yang ditambahkan');
+            }
         }
     }
 
     var file = document.getElementById('file');
-    file.onchange = function() {
+    file.onchange = function () {
         if (file.files.length > 0) {
             document.getElementById('filename').innerHTML = file.files[0].name;
         }
@@ -212,16 +265,58 @@
             $('#photo-full').append(`<img src="` + url + `" alt="image">`);
         });
 
+        edit_photo = ((id) => {
+            $.ajax({
+                type: "GET",
+                url: "/admin/photos/" + id,
+                success: ((response) => {
+                    $('#form_edit').attr('action', '/admin/photos/edit/' + id);
+                    $('#id_edit').attr('value', id);
+                    $('#img_edit').attr('src', response.photo_url);
+                    $('#source_edit').attr('value', response.source_url);
+                    $('#impression_edit').val(response.comment_impression).attr('selected', 'selected');
+                    $('#modal-edit-photo').addClass('is-active');
+                }),
+                error: ((error) => console.log(error))
+            });
+        })
+
         delete_photo = (id => {
-            $('#photo-' + id).remove();
+            swal({
+                title: "Yakin ingin menghapus foto ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/photos/delete/" + id,
+                            success: ((response) => {
+                                $('#photo-' + id).remove();
+                                swal("Foto telah berhasil di hapus", {
+                                    icon: "success"
+                                });
+                            }),
+                            error: ((error) => {
+                                console.log(error);
+                            })
+                        });
+                    }
+                });
         });
 
         $('#add-photo').click(() => $('#modal-add-photo').addClass('is-active'));
-        $('.delete').click(() => $('#modal-add-photo').removeClass('is-active'));
+        $('.delete').click(() => {
+            $('#modal-add-photo').removeClass('is-active');
+            $('#modal-edit-photo').removeClass('is-active');
+        });
         $('.modal-close').click(() => $('#modal-photo').removeClass('is-active'));
         $('.modal-background').click(() => {
             $('#modal-add-photo').removeClass('is-active');
             $('#modal-photo').removeClass('is-active');
+            $('#modal-edit-photo').removeClass('is-active');
         });
     });
 </script>

@@ -33,14 +33,26 @@ def feed_stream():
 
 @app.route('/photos/')
 def photos():
-    # dummy data
-    tes = [
-        { 'index': 1, 'url': 'image/img1.jpg', 'impresi': 'happy' },
-        { 'index': 2, 'url': 'image/img2.jpg', 'impresi': 'sad' },
-        { 'index': 3, 'url': 'image/img3.jpg', 'impresi': 'surprise' },
-        { 'index': 4, 'url': 'image/img1.jpg', 'impresi': 'happy' },
-    ]
-    return render_template('photos.html', title="Foto Percobaan", tes=tes)
+    try:
+        photos = Photos.query.all()
+        impresi = { 2: 'happy', 3: 'sad', 4: 'surprise' }
+        result, data = [], {}
+        for p in photos:
+            if p.comment_impression in impresi:
+                p.comment_impression = impresi[p.comment_impression]
+            data = {
+                'id_photo': p.id_photo,
+                'photo_name': p.photo_name,
+                'photo_url': p.photo_url,
+                'source_url': p.source_url,
+                'comment_impression': p.comment_impression
+            }
+            result.append(data)
+            data = {}
+    except Exception as e:
+        print('error query photos')
+        print(e)
+    return render_template('photos.html', title="Foto Percobaan", photos=result)
 
 @app.route('/results/')
 def result():
@@ -79,6 +91,12 @@ def admin():
         return render_template('admin/admin.html', title="Admin Page")
     else:
         return redirect(url_for('login'))
+
+@app.route('/admin/feature')
+def extraction_feature():
+    if session.get('loggedin'):
+        return render_template('admin/feature_extraction.html', title="Ekstraksi Fitur")
+    return redirect(url_for('login'))
 
 @app.route('/admin/photos/')
 def photos_collection():
@@ -130,3 +148,53 @@ def add_photo():
         
         return redirect(url_for('photos_collection'))
     return redirect(url_for('photos_collection'))
+
+@app.route('/admin/photos/<int:id>', methods=['GET'])
+def get_photo(id):
+    try:
+        photo = Photos.query.filter_by(id_photo=id).first()
+        data = {}
+        data = {
+            'id_photo': photo.id_photo,
+            'photo_url': photo.photo_url,
+            'source_url': photo.source_url,
+            'comment_impression': photo.comment_impression
+        }
+    except Exception as e:
+        print('error to qurey photo')
+        print(e)
+    return jsonify(data)
+
+@app.route('/admin/photos/edit/<int:id>', methods=['POST'])
+def edit_photo(id):
+    if request.method == 'POST':
+        try:
+            photo = Photos.query.filter_by(id_photo=id).first()
+            photo.source_url = request.form.get('source')
+            photo.comment_impression = request.form.get('impression')
+            db.session.commit()
+        except Exception as e:
+            print('error to update photo')
+            print(e)
+        return redirect(url_for('photos_collection'))
+    return redirect(url_for('photos_collection'))
+
+@app.route('/admin/photos/delete/<int:id>', methods=['POST'])
+def delete_photo(id):
+    result = False
+    try:
+        photo = Photos.query.filter_by(id_photo=id).first()
+        db.session.delete(photo)
+        db.session.commit()
+        result = True
+    except Exception as e:
+        print('error to delete photo')
+        print(e)
+    return jsonify({'status': result})
+
+@app.route('/admin/result')
+def result_detection():
+    if session.get('loggedin'):
+        results = None
+        return render_template('admin/result_detection.html', title='Hasil Percobaan')
+    return redirect(url_for('login'))
