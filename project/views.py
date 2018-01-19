@@ -96,6 +96,59 @@ def admin():
     else:
         return redirect(url_for('login'))
 
+@app.route('/admin/expression')
+def expression():
+    if session.get('loggedin'):
+        try:
+            expression = Expression.query.all()
+            print(expression)
+        except Exception as e:
+            print('error to query expression')
+            print(e)
+        return render_template('admin/expression.html', title="Data Ekspresi", expression=expression)
+    return redirect(url_for('login'))
+
+@app.route('/admin/expression/<string:id>', methods=['GET'])
+def get_expression(id):
+    try:
+        expression = Expression.query.filter_by(id_expression=int(id)).first()
+        data = {}
+        data = {
+            'id_expression': expression.id_expression,
+            'expression_name': expression.expression_name
+        }
+    except Exception as e:
+        print('error to qurey expression')
+        print(e)
+    return jsonify(data)
+
+@app.route('/admin/expression/edit/<int:id>', methods=['POST'])
+def edit_expression(id):
+    if request.method == 'POST':
+        try:
+            expression = Expression.query.filter_by(id_expression=id).first()
+            expression.expression_name = request.form.get('name')
+            expression.updated_at = datetime.datetime.now()
+            db.session.commit()
+        except Exception as e:
+            print('error to update expression')
+            print(e)
+        return redirect(url_for('expression'))
+    return redirect(url_for('expression'))
+
+@app.route('/admin/expression/add', methods=['POST'])
+def add_expression():
+    if request.method == 'POST':
+        try:
+            expression = Expression(expression_name=request.form.get('name'))
+            db.session.add(expression)
+            db.session.commit()
+        except Exception as e:
+            print('error to add expression')
+            print(e)
+        return redirect(url_for('expression'))    
+    return redirect(url_for('expression'))
+
 @app.route('/admin/feature')
 def extraction_feature():
     if session.get('loggedin'):
