@@ -15,8 +15,8 @@ function carousel() {
     }
     else {
         swal({
-            title: "Complete",
-            text: "Facial expression detection",
+            title: "Selesai",
+            text: "Deteksi ekspresi wajah selesai dilakukan",
             icon: "success",
             button: "Next",
         })

@@ -14,9 +14,13 @@ from project.face_detect import FaceDetect
 def index():
     return render_template('index.html', title="Home")
 
-@app.route('/main_detect/')
+@app.route('/detect_expression')
 def main():
     return render_template('main.html', title="Deteksi Ekspresi")
+
+@app.route('/main_detect/<int:id>')
+def detect(id):
+    return render_template('slideshow.html', title="Deteksi Ekspresi")
 
 @app.route('/detect_result/')
 def detect_result():
@@ -97,6 +101,14 @@ def extraction_feature():
     if session.get('loggedin'):
         return render_template('admin/feature_extraction.html', title="Ekstraksi Fitur")
     return redirect(url_for('login'))
+
+@app.route('/feature')
+def feature():
+    data = None
+    with open('tes_pca/feature.json') as f:
+        data = json.load(f)
+        f.close()
+    return jsonify(data)
 
 @app.route('/admin/photos/')
 def photos_collection():

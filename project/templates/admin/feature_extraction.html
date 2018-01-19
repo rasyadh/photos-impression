@@ -18,9 +18,32 @@
 <!-- feature extraction -->
 <section class="section">
     <div class="container">
-
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Ekspresi</th>
+                    <th>Fitur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>1</th>
+                    <th>-</th>
+                    <th>
+                        <a onclick="open_feature()">fitur</a>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </section>
+
+<script>
+    function open_feature() {
+        window.open('/feature', '_blank');
+    }
+</script>
 
 <!-- end yield content -->
 {% endblock %}

@@ -1,0 +1,27 @@
+<!-- yield content -->
+{% extends 'base.html' %} {% block content %}
+
+<!-- detect -->
+<section class="section">
+    <div class="container">
+        <div class="slideshow-wrapper">
+            <figure class="image-slide fade has-text-centered" id="img-slide">
+                <img class="slide" src="{{ url_for('static', filename='image/img1.jpg') }}" />
+            </figure>
+            <figure class="image-slide fade has-text-centered" id="img-slide">
+                <img class="slide" src="{{ url_for('static', filename='image/img2.jpg') }}" />
+            </figure>
+            <figure class="image-slide fade has-text-centered" id="img-slide">
+                <img class="slide" src="{{ url_for('static', filename='image/img3.jpg') }}" />
+            </figure>
+        </div>
+    </div>
+
+    <img class="video_frame" src="{{ url_for('feed_stream') }}" />
+</section>
+
+<!-- script slideshow -->
+<script src="{{url_for('static', filename='js/slideshow.js') }}"></script>
+
+<!-- end yield content -->
+{% endblock %}

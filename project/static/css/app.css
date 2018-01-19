@@ -14,8 +14,10 @@
 /** Footer **/
 
 /** Slideshow **/
-.nav-slideshow {
-    margin-top: 10px;
+.slide {
+    width: 880px;
+    height: auto;
+    font-size: 1.42857143rem;
 }
 
 .video_frame {
@@ -23,7 +25,7 @@
     height: 120px;
     border: 1px solid black;
     position: absolute;
-    bottom: 80px;
+    bottom: 50px;
     right: 20px;
 }
 
