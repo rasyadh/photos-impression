@@ -101,7 +101,6 @@ def expression():
     if session.get('loggedin'):
         try:
             expression = Expression.query.all()
-            print(expression)
         except Exception as e:
             print('error to query expression')
             print(e)
