@@ -16,33 +16,135 @@
 </section>
 
 <!-- feature extraction -->
+<!-- dataset facial expression -->
 <section class="section">
     <div class="container">
-        <table class="table is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Ekspresi</th>
-                    <th>Fitur</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>1</th>
-                    <th>-</th>
-                    <th>
-                        <a onclick="open_feature()">fitur</a>
-                    </th>
-                </tr>
-            </tbody>
-        </table>
+        <h1 class="subtitle">Dataset JAFFE</h1>
+        <div class="columns">
+            <div class="column">
+                <button class="button is-primary" id="read-dataset">
+                    Baca Direktori Dataset
+                </button>
+                <button class="button is-primary" id="extract-dataset">
+                    Proses Ekstraksi Fitur
+                </button>
+                <button class="button is-primary" id="show-feature">
+                    Tampilkan Hasil Fitur
+                </button>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="tabs is-centered">
+                    <ul>
+                        <li class="is-active">
+                            <a href="#netral" onclick="tab('NE')">Netral</a>
+                        </li>
+                        <li>
+                            <a href="#happy" onclick="tab('HA')">Bahagia</a>
+                        </li>
+                        <li>
+                            <a href="#sad" onclick="tab('SA')">Sedih</a>
+                        </li>
+                        <li>
+                            <a href="#surprise" onclick="tab('SU')">Terkejut</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-multiline is-centered" id="datasets"></div>
     </div>
 </section>
 
 <script>
-    function open_feature() {
-        window.open('/feature', '_blank');
+    $(() => {
+        $('#read-dataset').click(() => {
+            $.ajax({
+                type: "GET",
+                url: "/admin/feature/read_dataset",
+                success: ((response) => {
+                    swal({
+                        title: "Dataset telah berhasil di baca",
+                        icon: "success"
+                    })
+                        .then((value) => {
+                            location.reload();
+                        })
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        $('#extract-dataset').click(() => {
+            $.ajax({
+                type: "GET",
+                url: "/admin/feature/process",
+                success: ((response) => {
+                    swal({
+                        title: "Ekstraksi fitur berhasil",
+                        icon: "success"
+                    })
+                        .then((value) => {
+                            location.reload();
+                        })
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        $('#show-feature').click(() => {
+            window.open('/admin/feature/expression', '_blank');
+        });
+    });
+
+    // parse response to JSON
+    var datasets = JSON.parse('{{ datasets | tojson | safe }}');
+    console.log(datasets);
+
+    // init tabs indicator
+    var tab_index = ['NE', 'HA', 'SA', 'SU'];
+    var active_tab;
+    var tabs = $('li');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].className == 'is-active') {
+            active_tab = tab_index[i];
+            tab_detail(active_tab);
+        }
     }
+
+    // set active tab
+    function tab(tab_name) {
+        if (active_tab == tab_name) {
+            active_tab = tab_name;
+            tab_detail(tab_name);
+        }
+        else {
+            tabs[tab_index.indexOf(active_tab)].className = '';
+            active_tab = tab_name;
+            tabs[tab_index.indexOf(active_tab)].className = 'is-active';
+            tab_detail(tab_name);
+        }
+    }
+
+    // show filtered photo
+    function tab_detail(tab_name) {
+        $('#datasets').empty();
+        if (tab_name in datasets) {
+            for (var i = 0; datasets[tab_name].length; i++) {
+                $('#datasets').append(`
+                    <div class="column is-2">
+                        <div class="card">
+                            <div class="card-content" style="padding: 1em;">
+                                <p>` + datasets[tab_name][i].name + `</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+    }
+
 </script>
 
 <!-- end yield content -->

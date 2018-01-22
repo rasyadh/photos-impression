@@ -3,12 +3,14 @@ import os, datetime
 from flask import Flask, request, Response, jsonify, json
 from flask import render_template, url_for, redirect, send_from_directory
 from flask import make_response, abort, session
+from werkzeug.utils import secure_filename
 
 from project import app
 from project.core import db
 from project.models import *
 
 from project.face_detect import FaceDetect
+from project.pca import PrincipleComponentAnalysis
 
 @app.route('/')
 def index():
@@ -148,16 +150,79 @@ def add_expression():
         return redirect(url_for('expression'))    
     return redirect(url_for('expression'))
 
-@app.route('/admin/feature')
+@app.route('/admin/feature/')
 def extraction_feature():
     if session.get('loggedin'):
-        return render_template('admin/feature_extraction.html', title="Ekstraksi Fitur")
+        data = None
+        DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
+        try:
+            with open(DATASET_FILE_PATH) as f:
+                data = json.load(f)
+                f.close()
+        except Exception as e:
+            print('error to read json')
+            print(e)
+        return render_template('admin/feature_extraction.html', title="Ekstraksi Fitur", datasets=data)
     return redirect(url_for('login'))
 
-@app.route('/feature')
+@app.route('/admin/feature/read_dataset', methods=['GET'])
+def read_dataset():
+    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
+    result, data = {}, []
+    try:
+        for dirname, dirnames, filenames in os.walk(DATASET_PATH):
+            for subdirname in dirnames:
+                subject_path = os.path.join(dirname, subdirname)
+                for filename in os.listdir(subject_path):
+                    temp = {
+                        'name': filename,
+                        'url': '/static/image/dataset/jaffe/' + subdirname + '/' + filename
+                    }
+                    data.append(temp)
+                    temp = {}
+                result[subdirname] = data
+                data = []
+    except Exception as e:
+        print('error wrong diretory')
+        print(e)
+    with open(DATASET_PATH + 'dataset_jaffe.json', 'w') as outfile:
+        json.dump(result, outfile)
+    return redirect(url_for('extraction_feature'))
+
+@app.route('/admin/feature/process', methods=['GET'])
+def process_feature():
+    data, size = None, 10
+    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
+    DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
+    with open(DATASET_FILE_PATH) as f:
+        data = json.load(f)
+        f.close()
+    pca = PrincipleComponentAnalysis('project/cascade/haarcascade_frontalface_default.xml')
+
+    result, arr = {}, []
+    for index in data:
+        for photo in data[index]:
+            face = pca.read_images('project' + photo['url'], size)
+            eigenvalue, eigenvector = pca.process_pca(face)
+            temp = {
+                'name': photo['name'],
+                'eigenvalue': eigenvalue.tolist(),
+                'eigenvector': eigenvector.tolist()
+            }
+            arr.append(temp)
+            temp = {}
+        result[index] = arr
+        arr = []
+
+    with open(DATASET_PATH + 'feature_jaffe.json', 'w') as outfile:
+        json.dump(result, outfile)
+    return redirect(url_for('extraction_feature'))
+
+@app.route('/admin/feature/expression/')
 def feature():
     data = None
-    with open('tes_pca/feature.json') as f:
+    DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/feature_jaffe.json'
+    with open(DATASET_FILE_PATH) as f:
         data = json.load(f)
         f.close()
     return jsonify(data)
@@ -191,6 +256,7 @@ def photos_collection():
 @app.route('/admin/photos/add', methods=['POST'])
 def add_photo():
     result = None
+    app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__)) + '\static\image\photos'
     if request.method == 'POST':
         file = request.files['photo']
         name = 'photo-' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.jpg'
