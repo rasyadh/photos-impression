@@ -1,4 +1,5 @@
 import os, datetime
+import random
 
 from flask import Flask, request, Response, jsonify, json
 from flask import render_template, url_for, redirect, send_from_directory
@@ -26,7 +27,37 @@ def main():
 
 @app.route('/main_detect/<int:id>')
 def detect(id):
-    return render_template('slideshow.html', title="Deteksi Ekspresi")
+    picked = random_slide(id)
+    return render_template('slideshow.html', title="Deteksi Ekspresi", slides=picked)
+
+def random_slide(id):
+    counter, max = 0, 6
+    slideshow, temp, choiche = {}, [], []
+
+    try:
+        if id == 1:
+            photos = Photos.query.all()
+        else:
+            photos = Photos.query.filter_by(comment_impression=id).all()
+    except Exception as e:
+        print('error to query photo')
+        print(e)
+
+    for i in range(0, len(photos)):
+        temp.append(i)
+    while counter < max:
+        rdm = random.choice(temp)
+        if not rdm in choiche:
+            slideshow = {
+                'id': photos[rdm].id_photo,
+                'photo_name': photos[rdm].photo_name,
+                'photo_url': photos[rdm].photo_url,
+                'impression': photos[rdm].comment_impression
+            }
+            choiche.append(slideshow)
+            counter += 1
+
+    return choiche
 
 @app.route('/detect_result/')
 def detect_result():

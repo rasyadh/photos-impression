@@ -5,15 +5,11 @@
 <section class="section">
     <div class="container">
         <div class="slideshow-wrapper">
+            {% for slide in slides %}
             <figure class="image-slide fade has-text-centered" id="img-slide">
-                <img class="slide" src="{{ url_for('static', filename='image/img1.jpg') }}" />
+                <img class="slide" src="{{ slide.photo_url }}"/>
             </figure>
-            <figure class="image-slide fade has-text-centered" id="img-slide">
-                <img class="slide" src="{{ url_for('static', filename='image/img2.jpg') }}" />
-            </figure>
-            <figure class="image-slide fade has-text-centered" id="img-slide">
-                <img class="slide" src="{{ url_for('static', filename='image/img3.jpg') }}" />
-            </figure>
+            {% endfor %}
         </div>
     </div>
 
