@@ -28,12 +28,12 @@ def main():
 @app.route('/main_detect/<int:id>')
 def detect(id):
     picked = random_slide(id)
-    return render_template('slideshow.html', title="Deteksi Ekspresi", slides=picked)
+    slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
+    return render_template('slideshow.html', title="Deteksi Ekspresi", slides=picked, category=slides[id])
 
 def random_slide(id):
     counter, max = 0, 6
     slideshow, temp, choiche = {}, [], []
-
     try:
         if id == 1:
             photos = Photos.query.all()
@@ -56,7 +56,6 @@ def random_slide(id):
             }
             choiche.append(slideshow)
             counter += 1
-
     return choiche
 
 @app.route('/detect_result/')
@@ -76,7 +75,7 @@ def feed_stream():
 def photos():
     try:
         photos = Photos.query.all()
-        impresi = { 2: 'happy', 3: 'sad', 4: 'surprise' }
+        impresi = { 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
         result, data = [], {}
         for p in photos:
             if p.comment_impression in impresi:
@@ -189,7 +188,7 @@ def add_expression():
 def extraction_feature():
     if session.get('loggedin'):
         data = None
-        DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
+        DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe-jpg\dataset_jaffe.json'
         try:
             with open(DATASET_FILE_PATH) as f:
                 data = json.load(f)
@@ -271,7 +270,7 @@ def photos_collection():
     if session.get('loggedin'):
         try:
             photos = Photos.query.all()
-            impresi = { 2: 'happy', 3: 'sad', 4: 'surprise' }
+            impresi = { 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
             result, data = [], {}
             for p in photos:
                 if p.comment_impression in impresi:

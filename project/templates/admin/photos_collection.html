@@ -26,16 +26,16 @@
                 <div class="tabs">
                     <ul>
                         <li class="is-active">
-                            <a href="#all" onclick="tab('all')">Semua</a>
+                            <a href="#semua" onclick="tab('semua')">Semua</a>
                         </li>
                         <li>
-                            <a href="#happy" onclick="tab('happy')">Bahagia</a>
+                            <a href="#bahagia" onclick="tab('bahagia')">Bahagia</a>
                         </li>
                         <li>
-                            <a href="#sad" onclick="tab('sad')">Sedih</a>
+                            <a href="#sedih" onclick="tab('sedih')">Sedih</a>
                         </li>
                         <li>
-                            <a href="#surprise" onclick="tab('surprise')">Terkejut</a>
+                            <a href="#terkejut" onclick="tab('terkejut')">Terkejut</a>
                         </li>
                     </ul>
                 </div>
@@ -158,7 +158,7 @@
     var photos = JSON.parse('{{ photos | tojson | safe }}');
 
     // init tabs indicator
-    var tab_index = ['all', 'happy', 'sad', 'surprise'];
+    var tab_index = ['semua', 'bahagia', 'sedih', 'terkejut'];
     var active_tab;
     var tabs = $('li');
     for (var i = 0; i < tabs.length; i++) {
@@ -185,7 +185,7 @@
     // show filtered photo
     function tab_detail(tab_name) {
         $('#photos').empty();
-        if (tab_name == 'all') {
+        if (tab_name == 'semua') {
             if (photos) {
                 for (var i = 0; i < photos.length; i++) {
                     $('#photos').append(`
@@ -200,7 +200,7 @@
                                 </div>
                                 <div class="card-content" style="padding: 1em;">
                                     <p>` + photos[i].photo_name + `</p>
-                                    <p>` + photos[i].source_url + `</p>
+                                    <p class="subtitle is-6">` + photos[i].source_url + `</p>
                                     <p>Impresi ` + photos[i].comment_impression + `</p>
                                 </div>
                                 <footer class="card-footer">
@@ -233,7 +233,7 @@
                                 </div>
                                 <div class="card-content" style="padding: 1em;">
                                     <p>` + photos[i].photo_name + `</p>
-                                    <p>` + photos[i].source_url + `</p>
+                                    <p class="subtitle is-6">` + photos[i].source_url + `</p>
                                     <p>Impresi ` + photos[i].comment_impression + `</p>
                                 </div>
                                 <footer class="card-footer">

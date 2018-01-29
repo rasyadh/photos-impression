@@ -57,20 +57,33 @@
     </div>
 </section>
 
+<div class="modal" id="modal-loading">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="has-text-centered">
+            <img src="{{ url_for('static', filename='image/interwind.gif') }}" alt="loading">
+        </div>
+    </div>
+</div>
+
 <script>
     $(() => {
         $('#read-dataset').click(() => {
             $.ajax({
                 type: "GET",
                 url: "/admin/feature/read_dataset",
+                beforeSend: (() => {
+                    $('#modal-loading').addClass('is-active');
+                }),
                 success: ((response) => {
+                    $('#modal-loading').removeClass('is-active');
                     swal({
                         title: "Dataset telah berhasil di baca",
                         icon: "success"
                     })
                         .then((value) => {
                             location.reload();
-                        })
+                        });
                 }),
                 error: ((error) => console.log(error))
             });
@@ -80,14 +93,18 @@
             $.ajax({
                 type: "GET",
                 url: "/admin/feature/process",
+                beforeSend: (() => {
+                    $('#modal-loading').addClass('is-active');
+                }),
                 success: ((response) => {
+                    $('#modal-loading').removeClass('is-active');
                     swal({
                         title: "Ekstraksi fitur berhasil",
                         icon: "success"
                     })
                         .then((value) => {
                             location.reload();
-                        })
+                        });
                 }),
                 error: ((error) => console.log(error))
             });
@@ -96,6 +113,8 @@
         $('#show-feature').click(() => {
             window.open('/admin/feature/expression', '_blank');
         });
+
+
     });
 
     // parse response to JSON
@@ -135,6 +154,11 @@
                 $('#datasets').append(`
                     <div class="column is-2">
                         <div class="card">
+                            <div class="card-image">
+                                <figure class="image">
+                                    <img src="` + datasets[tab_name][i].url + `" alt="image">
+                                </figure>
+                            </div>
                             <div class="card-content" style="padding: 1em;">
                                 <p>` + datasets[tab_name][i].name + `</p>
                             </div>

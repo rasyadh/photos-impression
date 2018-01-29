@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Facial Expression" />
+    <meta name="theme-color" content="#209CEE">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='image/ImpresiFoto.png') }}" />
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bulma.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/app.css') }}" />
@@ -22,7 +24,10 @@
         <div class="container">
             <div class="navbar-brand">
                 <a class="navbar-item" href="/">
-                    <h1 class="title is-5 has-text-white">Impresi Foto</h1>
+                    <img class="image" src="{{ url_for('static', filename='image/ImpresiFotoWhite.png') }}" alt="Logo">
+                    <h1 class="title is-5 has-text-white">
+                        | Impresi Foto
+                    </h1>
                 </a>
                 <div class="navbar-burger burger" data-target="menu">
                     <span></span>
