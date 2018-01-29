@@ -12,6 +12,10 @@ from project.models import *
 from project.face_detect import FaceDetect
 from project.pca import PrincipleComponentAnalysis
 
+@app.route('/face_detect')
+def face():
+    return render_template('face.html')
+
 @app.route('/')
 def index():
     return render_template('index.html', title="Home")
@@ -191,19 +195,23 @@ def read_dataset():
 
 @app.route('/admin/feature/process', methods=['GET'])
 def process_feature():
+    print('process')
     data, size = None, 10
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
     DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
     with open(DATASET_FILE_PATH) as f:
         data = json.load(f)
         f.close()
-    pca = PrincipleComponentAnalysis('project/cascade/haarcascade_frontalface_default.xml')
+    pca = PrincipleComponentAnalysis('project/cascade/haarcascade_frontalface_default.xml', 10)
 
     result, arr = {}, []
     for index in data:
         for photo in data[index]:
             face = pca.read_images('project' + photo['url'], size)
-            eigenvalue, eigenvector = pca.process_pca(face)
+            mu = pca.mean(face)
+            C = pca.covariance(mu)
+            U, eigenvalue, eigenvector = pca.eigenfaces(C, mu)
+
             temp = {
                 'name': photo['name'],
                 'eigenvalue': eigenvalue.tolist(),

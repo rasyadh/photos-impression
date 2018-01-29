@@ -1,10 +1,11 @@
 import numpy as np
-from numpy import linalg as LA
+from numpy.linalg import eigh, solve
 import cv2
 
 class PrincipleComponentAnalysis:
-    def __init__(self, classifier):
+    def __init__(self, classifier, num_component):
         self.classifier = classifier
+        self.num_component = num_component
 
     def read_images(self, path, size=None):
         face = None
@@ -24,7 +25,26 @@ class PrincipleComponentAnalysis:
             if (size is not None):
                 face = cv2.resize(face, (size, size))
         
-        return face
+        return face.tolist()
+    
+    def mean(self, data):
+        mu = data - np.mean(data, axis=0)
+
+        return mu
+
+    def covariance(self, mu):
+        C = np.cov(mu, rowvar=False)
+
+        return C
+
+    def eigenfaces(self, C, mu):
+        eigenvalue, eigenvector = eigh(C)
+        idx = np.argsort(eigenvalue)[::-1]
+        eigenvector = eigenvector[:, idx]
+        eigenvalue, eigenvector = eigenvalue[idx], eigenvector[:, :self.num_component]
+        U = np.dot(eigenvector.T, mu.T).T
+
+        return U, eigenvalue, eigenvector
 
     def process_pca(self, data):
         w, v = LA.eig(data)
