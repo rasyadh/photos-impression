@@ -25,12 +25,21 @@ class PrincipleComponentAnalysis:
             if (size is not None):
                 face = cv2.resize(face, (size, size))
         
-        return face.tolist()
+        return face
     
     def mean(self, data):
         mu = data - np.mean(data, axis=0)
 
         return mu
+
+    def asRowMatrix(self, data):
+        if len(data) == 0:
+            return np.array([])
+        mat = np.empty((0, data[0].size), dtype=data[0].dtype)
+        for row in data:
+            mat = np.vstack((mat, np.asarray(row).reshape(1, -1)))
+
+        return mat
 
     def covariance(self, mu):
         C = np.cov(mu, rowvar=False)

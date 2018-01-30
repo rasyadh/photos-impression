@@ -28,8 +28,14 @@
                 <button class="button is-warning" id="extract-dataset">
                     Proses Ekstraksi Fitur
                 </button>
+                <button class="button is-warning" id="extract2-dataset" style="display: none">
+                    Proses Ekstraksi Fitur Cara 2
+                </button>
                 <button class="button is-info" id="show-feature">
                     Tampilkan Hasil Fitur
+                </button>
+                <button class="button is-info" id="show-feature2" style="display: none">
+                    Tampilkan Hasil Fitur Cara 2
                 </button>
             </div>
         </div>
@@ -110,11 +116,34 @@
             });
         });
 
+        $('#extract2-dataset').click(() => {
+            $.ajax({
+                type: "GET",
+                url: "/admin/feature/process_2",
+                beforeSend: (() => {
+                    $('#modal-loading').addClass('is-active');
+                }),
+                success: ((response) => {
+                    $('#modal-loading').removeClass('is-active');
+                    swal({
+                        title: "Ekstraksi fitur berhasil",
+                        icon: "success"
+                    })
+                        .then((value) => {
+                            location.reload();
+                        });
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
         $('#show-feature').click(() => {
             window.open('/admin/feature/expression', '_blank');
         });
 
-
+        $('#show-feature2').click(() => {
+            window.open('/admin/feature/expression_2', '_blank');
+        });
     });
 
     // parse response to JSON
