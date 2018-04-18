@@ -1,5 +1,7 @@
 import os, datetime
 import random
+from time import time
+
 import numpy as np
 
 from flask import Flask, request, Response, jsonify, json
@@ -11,8 +13,11 @@ from project import app
 from project.core import db
 from project.models import *
 
-from project.face_detect import FaceDetect
+from project.face_detection import FaceDetection
+from project.utils import Utils
+from project.eigenfaces import Eigenfaces
 from project.pca import PrincipleComponentAnalysis
+from project.svm import SupportVectorMachine
 
 @app.route('/face_detect')
 def face():
@@ -63,14 +68,43 @@ def random_slide(id):
 def detect_result():
     return render_template('detect_result.html', title="Hasil Deteksi Ekspresi")
 
-def generate(detect):
+def generate(detect, pca, classifier, svm):
     while True:
-        frame = detect.get_frame()
+        feature_test = []
+        face = None
+
+        # frame = detect.get_frame()
+        frame, face = detect.get_frame()
+
+        if face is not None:
+            face = face.flatten()
+            feature_test.append(face)
+
+            data_test = pca.transform(feature_test)
+
+            label_pred = svm.predict(classifier, data_test)
+            print(label_pred)
+
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/feed_stream/')
 def feed_stream():
-    return Response(generate(FaceDetect()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
+    FEATURE_FILE_PATH = DATASET_PATH + 'eigenfaces_jaffe_dataset.json'
+    FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
+
+    with open(FEATURE_FILE_PATH) as data:
+        data_train = json.load(data)
+        data.close()
+
+    eigenfaces = Eigenfaces(n_components=50)
+    dataset = eigenfaces.prepare_data(FILE_PATH)
+    pca = eigenfaces.pca_data_test(dataset)
+
+    svm = SupportVectorMachine()
+    classifier = svm.train(data_train)
+
+    return Response(generate(FaceDetection(), pca, classifier, svm), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/photos/')
 def photos():
@@ -202,109 +236,48 @@ def extraction_feature():
 
 @app.route('/admin/feature/read_dataset', methods=['GET'])
 def read_dataset():
+    print('read jaffe dataset...')
+
+    t0 = time()
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
-    result, data = {}, []
-    try:
-        for dirname, dirnames, filenames in os.walk(DATASET_PATH):
-            for subdirname in dirnames:
-                subject_path = os.path.join(dirname, subdirname)
-                for filename in os.listdir(subject_path):
-                    temp = {
-                        'name': filename,
-                        'url': '/static/image/dataset/jaffe/' + subdirname + '/' + filename
-                    }
-                    data.append(temp)
-                    temp = {}
-                result[subdirname] = data
-                data = []
-    except Exception as e:
-        print('error wrong diretory')
-        print(e)
-    with open(DATASET_PATH + 'dataset_jaffe.json', 'w') as outfile:
-        json.dump(result, outfile)
+
+    utils = Utils()
+    utils.read_jaffe_dataset(DATASET_PATH)
+
+    print("done in %0.5fs" % (time() - t0))
+    print("file dataset jafee and feature jaffe created")
+
     return redirect(url_for('extraction_feature'))
 
 @app.route('/admin/feature/process', methods=['GET'])
 def process_feature():
-    print('process')
-    data, size = None, 20
+    print('process eigenfaces of jaffe dataset...')
+
+    t0 = time()
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
-    DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
-    with open(DATASET_FILE_PATH) as f:
-        data = json.load(f)
-        f.close()
-    pca = PrincipleComponentAnalysis('project/cascade/haarcascade_frontalface_default.xml', 20)
+    FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
 
-    result, arr = {}, []
-    for index in data:
-        for photo in data[index]:
-            face = pca.read_images('project' + photo['url'], size)
-            face = face.tolist()
-            mu = pca.mean(face)
-            C = pca.covariance(mu)
-            U, eigenvalue, eigenvector = pca.eigenfaces(C, mu)
+    eigenfaces = Eigenfaces(n_components=50)
+    data = eigenfaces.prepare_data(FILE_PATH)
+    eigenvectors = eigenfaces.principle_component_analysis(data)
 
-            temp = {
-                'name': photo['name'],
-                'eigenvalue': eigenvalue.tolist(),
-                'eigenvector': eigenvector.tolist()
-            }
-            arr.append(temp)
-            temp = {}
-        result[index] = arr
-        arr = []
+    datas = {
+        'eigenvectors': eigenvectors.tolist(),
+        'label': data['label']
+    }
 
-    with open(DATASET_PATH + 'feature_jaffe.json', 'w') as outfile:
-        json.dump(result, outfile)
-    return redirect(url_for('extraction_feature'))
+    with open(DATASET_PATH + 'eigenfaces_jaffe_dataset.json', 'w') as outfile:
+        json.dump(datas, outfile)
+        outfile.close()
 
-@app.route('/admin/feature/process_2', methods=['GET'])
-def process_2_feature():
-    print('process')
-    data, size = None, 20
-    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
-    DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe\dataset_jaffe.json'
-    with open(DATASET_FILE_PATH) as f:
-        data = json.load(f)
-        f.close()
-    pca = PrincipleComponentAnalysis('project/cascade/haarcascade_frontalface_default.xml', 20)
+    print("done in %0.5fs" % (time() - t0))
 
-    result, temp, faces = {}, {}, []
-    for index in data:
-        for photo in data[index]:
-            face = pca.read_images('project' + photo['url'], size)
-            faces.append(np.asarray(face, dtype=np.uint8))
-        temp[index] = faces
-        faces = []
-
-    for index in data:
-        mat = pca.asRowMatrix(temp[index])
-        mu = pca.mean(mat)
-        C = pca.covariance(mu)
-        U, eigenvalue, eigenvector = pca.eigenfaces(C, mu)
-        result[index] = {
-            'ekspresi': index,
-            'eigenvalue': eigenvalue.tolist(),
-            'eigenvector': eigenvector.tolist()
-        }
-
-    with open(DATASET_PATH + 'feature_2_jaffe.json', 'w') as outfile:
-        json.dump(result, outfile)
     return redirect(url_for('extraction_feature'))
 
 @app.route('/admin/feature/expression/')
 def feature():
     data = None
-    DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/feature_jaffe.json'
-    with open(DATASET_FILE_PATH) as f:
-        data = json.load(f)
-        f.close()
-    return jsonify(data)
-
-@app.route('/admin/feature/expression_2/')
-def feature_2():
-    data = None
-    DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/feature_2_jaffe.json'
+    DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/eigenfaces_jaffe_dataset.json'
     with open(DATASET_FILE_PATH) as f:
         data = json.load(f)
         f.close()

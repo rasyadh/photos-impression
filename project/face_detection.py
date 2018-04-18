@@ -3,7 +3,7 @@ import numpy as np
 
 CASECADE_CLASSIFIER_PATH = "project/cascade/haarcascade_frontalface_default.xml"
 
-class FaceDetect(object):
+class FaceDetection(object):
     def __init__(self):
         self.capture = cv2.VideoCapture(0)
 
@@ -12,6 +12,7 @@ class FaceDetect(object):
         cv2.destroyAllWindows()
 
     def get_frame(self):
+        face, size = None, 50
         success, frame = self.capture.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         detector = cv2.CascadeClassifier(CASECADE_CLASSIFIER_PATH)
@@ -25,7 +26,14 @@ class FaceDetect(object):
         ) 
 
         for (x, y, w, h) in faces:
+            face = gray[y : (y + h), x : (x + w)]
+            if (size is not None):
+                face = cv2.resize(face, (size, size))
+
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         ret, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
+
+        return jpeg.tobytes(), face
+
+        # return frame, face
