@@ -56,14 +56,14 @@ print(y_test)
 print()
 
 # Compute a PCA (eigenface) on the face dataset
-n_components = 50
+n_components = X_train.shape[0]
 
 print("Extraction the top %d eigenfaces from %d faces" % (n_components, X_train.shape[0]))
 t0 = time()
 pca = PCA(svd_solver='randomized', n_components=n_components, whiten=True).fit(X_train)
 print("done in %0.3fs" % (time() - t0))
 
-eigenfaces = pca.components_.reshape((n_components, 30, 30))
+eigenfaces = pca.components_.reshape((n_components, 100, 100))
 
 print("Projecting the input data on the eigenfaces orhonormal basis")
 t0 = time()

@@ -3,7 +3,7 @@ import numpy as np
 import json
 from utils import Utils
 
-size = 30
+size = 100
 DATASET_FILE_PATH = 'jaffe\dataset_jaffe.json'
 util = Utils('cascade\haarcascade_frontalface_default.xml')
 

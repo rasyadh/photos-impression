@@ -69,9 +69,11 @@ def detect_result():
     return render_template('detect_result.html', title="Hasil Deteksi Ekspresi")
 
 def generate(detect, pca, classifier, svm):
-    while True:
+    t0 = time()
+    while True: 
         feature_test = []
         face = None
+        label_pred = None
 
         # frame = detect.get_frame()
         frame, face = detect.get_frame()
@@ -84,6 +86,7 @@ def generate(detect, pca, classifier, svm):
 
             label_pred = svm.predict(classifier, data_test)
             print(label_pred)
+            print(time() - t0)
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 

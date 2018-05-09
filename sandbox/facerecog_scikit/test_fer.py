@@ -4,7 +4,6 @@ from time import time
 import numpy as np
 import cv2
 
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -12,11 +11,35 @@ from sklearn.decomposition import RandomizedPCA
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
 
-CASECADE_CLASSIFIER_PATH = "cascade/haarcascade_frontalface_default.xml"
+detector = cv2.CascadeClassifier("cascade/haarcascade_frontalface_default.xml")
 
+capture = cv2.VideoCapture(0)
+face = None
+status = True
+
+while status:
+    ret, frame = capture.read()
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = detector.detectMultiScale(
+        gray,
+        scaleFactor=1.5,
+        minNeighbors=5,
+        minSize=(50, 50),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+
+    for (x, y, w, h) in faces:
+        face = gray[y : (y + h), x : (x + w)]
+        face = cv2.resize(face, (100, 100))
+        print(face)
+        status = False
+
+capture.release()
+cv2.destroyAllWindows()
+'''
 img = cv2.imread('tes2.jpeg', 0)
 
-detector = cv2.CascadeClassifier(CASECADE_CLASSIFIER_PATH)
 faces = detector.detectMultiScale(
     img,
     scaleFactor=1.5,
@@ -28,7 +51,7 @@ faces = detector.detectMultiScale(
 for (x, y, w, h) in faces:
     face = img[y : (y + h), x : (x + w)]
     face = cv2.resize(face, (30, 30))
-
+'''
 X_test = []
 X_test.append(face.flatten())
 
@@ -60,14 +83,15 @@ X_train = X
 y_train = y
 
 # Compute a PCA (eigenface) on the face dataset
-n_components = 50
+# n_components = 50
+n_components = X_train.shape[0]
 
 print("Extraction the top %d eigenfaces from %d faces" % (n_components, X_train.shape[0]))
 t0 = time()
 pca = PCA(svd_solver='randomized', n_components=n_components, whiten=True).fit(X_train)
 print("done in %0.3fs" % (time() - t0))
 
-eigenfaces = pca.components_.reshape((n_components, 30, 30))
+eigenfaces = pca.components_.reshape((n_components, 100, 100))
 
 print("Projecting the input data on the eigenfaces orhonormal basis")
 t0 = time()
