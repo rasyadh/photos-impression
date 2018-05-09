@@ -40,7 +40,7 @@ class FaceDetection(object):
 
         # return frame, face
 
-    def rect_to_bb(rect):
+    def rect_to_bb(self, rect):
         x = rect.left()
         y = rect.top()
         w = rect.right() - x
@@ -56,7 +56,7 @@ class FaceDetection(object):
             rects = detector(gray, 0)
 
             for i, rect in enumerate(rects):
-                (x, y, w, h) = rect_to_bb(rect)
+                (x, y, w, h) = self.rect_to_bb(rect)
                 face = gray[y : (y + h), x : (x + w)]
                 if size is not None:
                     face = cv2.resize(face, (size, size))

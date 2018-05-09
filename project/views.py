@@ -70,13 +70,14 @@ def detect_result():
 
 def generate(detect, pca, classifier, svm):
     t0 = time()
+    FerDetected = dict()
     while True: 
         feature_test = []
         face = None
         label_pred = None
 
-        # frame = detect.get_frame()
-        frame, face = detect.get_frame()
+        # frame, face = detect.get_frame()
+        frame, face = detect.get_frame_dlib()
 
         if face is not None:
             face = face.flatten()
@@ -87,6 +88,9 @@ def generate(detect, pca, classifier, svm):
             label_pred = svm.predict(classifier, data_test)
             print(label_pred)
             print(time() - t0)
+            FerDetected = {
+                time() - t0: label_pred
+            }
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
