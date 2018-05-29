@@ -17,22 +17,27 @@
 
 <!-- result detection -->
 <section class="section">
-    <div class="container">
+    <div class="container" id="result_table">
         <table class="table is-hoverable is-fullwidth">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th>ID</th>
                     <th>Tanggal Percobaan</th>
                     <th>Hasil</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                {% if results %}
+                {% if results %} {% for res in results %}
                 <tr>
-                    <td colspan="4"></td>
+                    <td>{{ res.id_result_detection }}</td>
+                    <td>{{ res.created_at }}</td>
+                    <td>Hasil</td>
+                    <td>
+                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}')">Detail</button>
+                    </td>
                 </tr>
-                {% else %}
+                {% endfor %} {% else %}
                 <tr>
                     <td colspan="4" class="has-text-centered">Belum ada hasil percobaan</td>
                 </tr>
@@ -40,7 +45,67 @@
             </tbody>
         </table>
     </div>
+
+    <div class="container" id="detail_result_table" style="display: none;">
+        <div class="columns">
+            <div class="column">
+                <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
+            </div>
+            <div class="column">
+                <p class="subtitle" id="detection_date"></p>
+            </div>
+        </div>
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Ekspresi</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody id="result_table_body">
+            </tbody>
+        </table>
+    </div>
 </section>
+
+<script>
+    let detail;
+
+    $(() => {
+        detail_result = ((id, date) => {
+            $.ajax({
+                type: "GET",
+                url: "/results/" + id,
+                success: ((response) => {
+                    detail = response;
+                    detail_table(date);
+                    $('#result_table').hide();
+                    $('#detail_result_table').show();
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        detail_table = (date) => {
+            $('#detection_date').html(date);
+            detail.map((data) => {
+                $('#result_table_body').append(`
+                    <tr>
+                        <td>` + data.result_expression + `</td>
+                        <td>` + data.time_detected + `</td>
+                    </tr>
+                `);
+            });
+        };
+
+        back = () => {
+            detail = null;
+            $('#result_table_body').empty();
+            $('#detail_result_table').hide();
+            $('#result_table').show();
+        };
+    });
+</script>
 
 <!-- end yield content -->
 {% endblock %}

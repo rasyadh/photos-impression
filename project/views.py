@@ -172,8 +172,30 @@ def photos():
 
 @app.route('/results/')
 def result():
-    results = None
+    try:
+        results = ResultDetection.query.all()
+    except Exception as e:
+        print('error to get result detection')
+        print(e)
+
     return render_template('results.html', title="Hasil Percobaan", results=results)
+
+@app.route('/results/<string:id>')
+def result_detail(id):
+    try:
+        detection = Detection.query.filter_by(id_result_detection=int(id)).all()
+        result, data = [], {}
+        for d in detection:
+            data = {
+                'result_expression': d.result_expression,
+                'time_detected': d.time_detected
+            }
+            result.append(data)
+            data = {}
+    except Exception as e:
+        print('error to qurey expression')
+        print(e)
+    return jsonify(result)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
