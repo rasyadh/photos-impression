@@ -21,12 +21,22 @@
                     <th>ID Foto</th>
                     <th>Foto Percobaan</th>
                     <th>Hasil Ekspresi</th>
+                    <th>Waktu Terdeteksi (detik)</th>
                 </tr>
             </thead>
             <tbody>
+                {% if result %} {% for res in result %}
                 <tr>
-                    <td colspan="3"></td>
+                    <td>{{ res.id_detection }}</td>
+                    <td>photos</td>
+                    <td>{{ res.result_expression }}</td>
+                    <td>{{ res.time_detected }}</td>
                 </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="4">No result</td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

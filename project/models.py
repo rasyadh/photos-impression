@@ -34,7 +34,9 @@ class Photos(db.Model):
 class ResultDetection(db.Model):
     __tablename__ = 'result_detection'
 
+    # category photos (1: random, 2: bahagia, 3: sedih, 4: terkejut)
     id_result_detection = db.Column(db.Integer, primary_key=True)
+    category_photos = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def get_id_result_detection(self):
@@ -49,6 +51,7 @@ class Detection(db.Model):
     id_detection = db.Column(db.Integer, primary_key=True)
     id_result_detection = db.Column(db.Integer, db.ForeignKey('result_detection.id_result_detection'))
     id_photo = db.Column(db.Integer, db.ForeignKey('photos.id_photo'))
+    time_detected = db.Column(db.Float, nullable=False)
     initial_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
     result_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
 

@@ -8,6 +8,7 @@ from flask import Flask, request, Response, jsonify, json
 from flask import render_template, url_for, redirect, send_from_directory
 from flask import make_response, abort, session
 from werkzeug.utils import secure_filename
+from sqlalchemy import desc
 
 from project import app
 from project.core import db
@@ -35,7 +36,18 @@ def main():
 def detect(id):
     picked = random_slide(id)
     slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
-    return render_template('slideshow.html', title="Deteksi Ekspresi", slides=picked, category=slides[id])
+
+    try:
+        result_detection = ResultDetection(category_photos=id)
+        db.session.add(result_detection)
+        db.session.commit()
+
+        return render_template('slideshow.html', title="Deteksi Ekspresi", slides=picked, category=slides[id])
+    except Exception as e:
+        print('error to add result detection')
+        print(e)
+
+    redirect(url_for('main'))
 
 def random_slide(id):
     counter, max = 0, 6
@@ -53,22 +65,32 @@ def random_slide(id):
         temp.append(i)
     while counter < max:
         rdm = random.choice(temp)
-        if not rdm in choiche:
-            slideshow = {
-                'id': photos[rdm].id_photo,
-                'photo_name': photos[rdm].photo_name,
-                'photo_url': photos[rdm].photo_url,
-                'impression': photos[rdm].comment_impression
-            }
-            choiche.append(slideshow)
-            counter += 1
+        temp.remove(rdm)
+        slideshow = {
+            'id': photos[rdm].id_photo,
+            'photo_name': photos[rdm].photo_name,
+            'photo_url': photos[rdm].photo_url,
+            'impression': photos[rdm].comment_impression
+        }
+        choiche.append(slideshow)
+        counter += 1
+
     return choiche
 
 @app.route('/detect_result/')
 def detect_result():
-    return render_template('detect_result.html', title="Hasil Deteksi Ekspresi")
+    try:
+        result_detection = ResultDetection.query.order_by(desc(ResultDetection.id_result_detection)).first()
+        id = result_detection.id_result_detection
 
-def generate(detect, pca, classifier, svm):
+        detection = Detection.query.filter_by(id_result_detection=id).all()
+    except Exception as e:
+        print('error to get detection result')
+        print(e)
+
+    return render_template('detect_result.html', title="Hasil Deteksi Ekspresi", result=detection)
+
+def generate(detect, pca, classifier, svm, id_rd):
     t0 = time()
     FerDetected = dict()
     while True: 
@@ -84,13 +106,22 @@ def generate(detect, pca, classifier, svm):
             feature_test.append(face)
 
             data_test = pca.transform(feature_test)
+            label_pred = svm.predict(classifier, data_test)[0]
 
-            label_pred = svm.predict(classifier, data_test)
-            print(label_pred)
-            print(time() - t0)
+            endtime = float("{:.3f}".format(time() - t0))
+
             FerDetected = {
-                time() - t0: label_pred
+                endtime: label_pred
             }
+            print(FerDetected)
+
+            try:
+                detection = Detection(id_result_detection=id_rd, result_expression=int(label_pred), time_detected=endtime)
+                db.session.add(detection)
+                db.session.commit()
+            except Exception as e:
+                print('error to add detection')
+                print(e)
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
@@ -111,7 +142,10 @@ def feed_stream():
     svm = SupportVectorMachine()
     classifier = svm.train(data_train)
 
-    return Response(generate(FaceDetection(), pca, classifier, svm), mimetype='multipart/x-mixed-replace; boundary=frame')
+    result_detection = ResultDetection.query.order_by(desc(ResultDetection.id_result_detection)).first()
+    id_rd = result_detection.id_result_detection
+
+    return Response(generate(FaceDetection(), pca, classifier, svm, id_rd), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/photos/')
 def photos():
