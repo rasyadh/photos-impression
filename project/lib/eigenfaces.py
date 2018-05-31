@@ -1,9 +1,10 @@
 import json
 import numpy as np
 from time import time
-
-from sklearn.decomposition import RandomizedPCA
-from sklearn.decomposition import PCA
+from sklearn.decomposition import (
+    RandomizedPCA,
+    PCA
+)
 
 class Eigenfaces:
     def __init__(self, n_components):
@@ -27,7 +28,8 @@ class Eigenfaces:
         return datas
 
     def principle_component_analysis(self, datas):
-        print("extraction the top %d eigenfaces from %d faces" % (self.n_components, datas['data'].shape[0]))
+        print("extraction the top %d eigenfaces from %d faces" % (
+            self.n_components, datas['data'].shape[0]))
 
         pca = PCA(
             svd_solver='randomized',
@@ -40,7 +42,6 @@ class Eigenfaces:
         ))
 
         print("projecting the input data on the eigenfaces orhonormal basis")
-
         data = pca.transform(datas['data'])
 
         return data

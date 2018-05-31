@@ -1,5 +1,8 @@
 import numpy as np
-from numpy.linalg import eigh, solve
+from numpy.linalg import (
+    eigh, 
+    solve
+)
 import cv2
 
 class PrincipleComponentAnalysis:
@@ -50,7 +53,8 @@ class PrincipleComponentAnalysis:
         eigenvalue, eigenvector = eigh(C)
         idx = np.argsort(eigenvalue)[::-1]
         eigenvector = eigenvector[:, idx]
-        eigenvalue, eigenvector = eigenvalue[idx], eigenvector[:, :self.num_component]
+        eigenvalue, eigenvector = eigenvalue[idx], 
+        eigenvector[:, :self.num_component]
         U = np.dot(eigenvector.T, mu.T).T
 
         return U, eigenvalue, eigenvector

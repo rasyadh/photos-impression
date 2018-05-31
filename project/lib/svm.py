@@ -13,7 +13,8 @@ class SupportVectorMachine:
             'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1]
         }
         
-        clf = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid)
+        clf = GridSearchCV(SVC(
+            kernel='rbf', class_weight='balanced'), param_grid)
         clf = clf.fit(data['eigenvectors'], data['label'])
 
         print("Best estimator found by grid search:")
