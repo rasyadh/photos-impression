@@ -20,10 +20,6 @@ from project.eigenfaces import Eigenfaces
 from project.pca import PrincipleComponentAnalysis
 from project.svm import SupportVectorMachine
 
-@app.route('/face_detect')
-def face():
-    return render_template('face.html')
-
 @app.route('/')
 def index():
     return render_template('index.html', title="Home")

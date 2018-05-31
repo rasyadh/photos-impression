@@ -55,7 +55,18 @@
                 <p class="subtitle" id="detection_date"></p>
             </div>
         </div>
-        <table class="table is-hoverable is-fullwidth">
+        <!-- <div class="tabs is-centered">
+            <ul>
+                <li class="is-active">
+                    <a>Tabel</a>
+                </li>
+                <li>
+                    <a>Grafik</a>
+                </li>
+            </ul>
+        </div> -->
+        <!-- <canvas id="chart_result"></canvas> -->
+        <table class="table is-hoverable is-fullwidth" id="table_result">
             <thead>
                 <tr>
                     <th>Ekspresi</th>
@@ -69,7 +80,7 @@
 </section>
 
 <script>
-    let detail;
+    let detail, label, data;
 
     $(() => {
         detail_result = ((id, date) => {
@@ -78,6 +89,8 @@
                 url: "/results/" + id,
                 success: ((response) => {
                     detail = response;
+                    label = detail.map((data) => data.time_detected)
+                    data = detail.map((data) => data.result_expression)
                     detail_table(date);
                     $('#result_table').hide();
                     $('#detail_result_table').show();
@@ -105,6 +118,29 @@
             $('#result_table').show();
         };
     });
+
+    /**
+    let ctx = document.getElementById("chart_result").getContext("2d");
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data,
+            dataset: [{
+                data: label,
+                label: "Perubahan Ekspresi",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+            }]
+        },
+        options: {
+            scaleStartValue: 0
+        }
+    });
+    **/
 </script>
 
 <!-- end yield content -->

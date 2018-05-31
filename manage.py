@@ -1,14 +1,13 @@
-import os
-
 from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import (
+	Migrate,
+	MigrateCommand
+)
 from project import app
-from project.core import db
 from project.models import *
 
 migrate = Migrate(app,db)
 manager = Manager(app)
-
 manager.add_command('db',MigrateCommand)
 
 @manager.command
