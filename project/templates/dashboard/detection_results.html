@@ -1,0 +1,148 @@
+<!-- yield content -->
+{% extends 'dashboard/base_dashboard.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Hasil Percobaan
+            </h1>
+            <h2 class="subtitle">
+                Hasil percobaan deteksi ekspresi yang telah dilakukan.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- result detection -->
+<section class="section">
+    <div class="container" id="result_table">
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tanggal Percobaan</th>
+                    <th>Hasil</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %} {% for res in results %}
+                <tr>
+                    <td>{{ res.id_result_detection }}</td>
+                    <td>{{ res.created_at }}</td>
+                    <td>Hasil</td>
+                    <td>
+                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}')">Detail</button>
+                    </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="4" class="has-text-centered">Belum ada hasil percobaan</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="detail_result_table" style="display: none;">
+        <div class="columns">
+            <div class="column">
+                <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
+            </div>
+            <div class="column">
+                <p class="subtitle" id="detection_date"></p>
+            </div>
+        </div>
+        <!-- <div class="tabs is-centered">
+            <ul>
+                <li class="is-active">
+                    <a>Tabel</a>
+                </li>
+                <li>
+                    <a>Grafik</a>
+                </li>
+            </ul>
+        </div> -->
+        <!-- <canvas id="chart_result"></canvas> -->
+        <table class="table is-hoverable is-fullwidth" id="table_result">
+            <thead>
+                <tr>
+                    <th>Ekspresi</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody id="result_table_body">
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+    let detail, label, data;
+
+    $(() => {
+        detail_result = ((id, date) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/detection_results/" + id,
+                success: ((response) => {
+                    detail = response;
+                    label = detail.map((data) => data.time_detected)
+                    data = detail.map((data) => data.result_expression)
+                    detail_table(date);
+                    $('#result_table').hide();
+                    $('#detail_result_table').show();
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        detail_table = (date) => {
+            $('#detection_date').html(date);
+            detail.map((data) => {
+                $('#result_table_body').append(`
+                    <tr>
+                        <td>` + data.result_expression + `</td>
+                        <td>` + data.time_detected + `</td>
+                    </tr>
+                `);
+            });
+        };
+
+        back = () => {
+            detail = null;
+            $('#result_table_body').empty();
+            $('#detail_result_table').hide();
+            $('#result_table').show();
+        };
+    });
+
+    /**
+    let ctx = document.getElementById("chart_result").getContext("2d");
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data,
+            dataset: [{
+                data: label,
+                label: "Perubahan Ekspresi",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+            }]
+        },
+        options: {
+            scaleStartValue: 0
+        }
+    });
+    **/
+</script>
+
+<!-- end yield content -->
+{% endblock %}
+<!-- yield content -->

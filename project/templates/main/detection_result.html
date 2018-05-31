@@ -1,0 +1,46 @@
+<!-- yield content -->
+{% extends '/base.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Hasil Deteksi Ekspresi
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- result detection -->
+<section class="section">
+    <div class="container">
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>ID Foto</th>
+                    <th>Foto Percobaan</th>
+                    <th>Hasil Ekspresi</th>
+                    <th>Waktu Terdeteksi (detik)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if result %} {% for res in result %}
+                <tr>
+                    <td>{{ res.id_detection }}</td>
+                    <td>photos</td>
+                    <td>{{ res.result_expression }}</td>
+                    <td>{{ res.time_detected }}</td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="4">No result</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- end yield content -->
+{% endblock %}

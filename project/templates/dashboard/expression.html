@@ -1,0 +1,149 @@
+<!-- yield content -->
+{% extends 'dashboard/base_dashboard.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Ekspresi Wajah
+            </h1>
+            <h2 class="subtitle">
+                Data ekspresi wajah.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- result detection -->
+<section class="section">
+    <div class="container">
+        <button class="button is-primary" id="add_expression">Tambah Ekspresi</button>
+        <br>
+        <br>
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Ekspresi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if expression %} {% for ex in expression %}
+                <tr>
+                    <td>{{ ex.id_expression }}</td>
+                    <td>{{ ex.expression_name }}</td>
+                    <td>
+                        <button class="button is-warning" id="edit_expression" onclick="edit_expression('{{ ex.id_expression | string }}')">Edit</button>
+                        <button class="button is-danger" id="delete_expression" onclick="delete_expression('{{ ex.id_expression | string }}')">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="3" class="has-text-centered">Belum ada hasil percobaan</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- modal add expression -->
+<div class="modal" id="modal-add-expression">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Tambah Ekspresi Baru</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" action="/dashboard/expression/add">
+                <div class="field">
+                    <label class="label">Nama Ekspresi</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="name">
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Tambahkan Ekspresi" name="submit_expression">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<!-- modal edit expression -->
+<div class="modal" id="modal-edit-expression">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Edit Data Ekspresi</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" id="form_edit" action="">
+                <input type="hidden" id="id_edit">
+                <div class="field">
+                    <label class="label">Nama Ekspresi</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="name" id="name_edit">
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Simpan Data Ekspresi" name="save_expression">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<script>
+    $(() => {
+        $('#add_expression').click(() => $('#modal-add-expression').addClass('is-active'));
+
+        edit_expression = ((id) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/expression/" + id,
+                success: ((response) => {
+                    console.log(response);
+                    $('#form_edit').attr('action', '/dashboard/expression/edit/' + id);
+                    $('#id_edit').attr('value', id);
+                    $('#name_edit').attr('value', response.expression_name);
+                    $('#modal-edit-expression').addClass('is-active');
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        delete_expression = ((id) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/expression/delete/" + id,
+                success: ((response) => {
+                    window.open('/dashboard/expression', '_self');
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        $('.delete').click(() => {
+            $('#modal-add-expression').removeClass('is-active');
+            $('#modal-edit-expression').removeClass('is-active');
+        });
+        $('.modal.background').click(() => {
+            $('#modal-add-expression').removeClass('is-active');
+            $('#modal-edit-expression').removeClass('is-active');
+        });
+    });
+</script>
+
+<!-- end yield content -->
+{% endblock %}

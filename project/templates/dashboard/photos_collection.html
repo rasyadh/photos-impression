@@ -1,0 +1,326 @@
+<!-- yield content -->
+{% extends 'dashboard/base_dashboard.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Koleksi Foto
+            </h1>
+            <h2 class="subtitle">
+                Koleksi foto berdasarkan impresinya.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- photo collection -->
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-one-fifth">
+                <button class="button is-primary is-fullwidth" id="add-photo">Tambah Foto Baru</button>
+            </div>
+            <div class="column">
+                <div class="tabs">
+                    <ul>
+                        <li class="is-active">
+                            <a href="#semua" onclick="tab('semua')">Semua</a>
+                        </li>
+                        <li>
+                            <a href="#bahagia" onclick="tab('bahagia')">Bahagia</a>
+                        </li>
+                        <li>
+                            <a href="#sedih" onclick="tab('sedih')">Sedih</a>
+                        </li>
+                        <li>
+                            <a href="#terkejut" onclick="tab('terkejut')">Terkejut</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-multiline is-centered" id="photos"></div>
+    </div>
+</section>
+
+<!-- modal photo -->
+<div class="modal" id="modal-photo">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <figure class="image" id="photo-full"></figure>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
+<!-- modal add photo -->
+<div class="modal" id="modal-add-photo">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Tambah Foto Baru</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" action="/dashboard/photos_collection/add" enctype="multipart/form-data">
+                <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="photo" id="file">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Pilih Foto...
+                            </span>
+                        </span>
+                        <span class="file-name" id="filename"></span>
+                    </label>
+                </div>
+                <br>
+                <div class="field">
+                    <label class="label">Source URL Foto</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="source">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Impresi</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select required name="impression">
+                                <option value="2">Bahagia</option>
+                                <option value="3">Sedih</option>
+                                <option value="4">Terkejut</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Tambahkan Foto" name="submit-photo">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<!-- modal edit photo -->
+<div class="modal" id="modal-edit-photo">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Edit Foto</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form class="form" method="POST" action="" id="form_edit">
+                <input type="hidden" id="id_edit">
+                <div class="field">
+                    <figure class="image">
+                        <img src="" id="img_edit">
+                    </figure>
+                </div>
+                <div class="field">
+                    <label class="label">Source URL Foto</label>
+                    <div class="control">
+                        <input class="input" type="text" required name="source" id="source_edit">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Impresi</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select required name="impression" id="impression_edit">
+                                <option value="2">Bahagia</option>
+                                <option value="3">Sedih</option>
+                                <option value="4">Terkejut</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Simpan Foto" name="save-photo">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<script>
+    // parse response to JSON
+    var photos = JSON.parse('{{ photos | tojson | safe }}');
+
+    // init tabs indicator
+    var tab_index = ['semua', 'bahagia', 'sedih', 'terkejut'];
+    var active_tab;
+    var tabs = $('li');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].className == 'is-active') {
+            active_tab = tab_index[i];
+            tab_detail(active_tab);
+        }
+    }
+
+    // set active tab
+    function tab(tab_name) {
+        if (active_tab == tab_name) {
+            active_tab = tab_name;
+            tab_detail(tab_name);
+        }
+        else {
+            tabs[tab_index.indexOf(active_tab)].className = '';
+            active_tab = tab_name;
+            tabs[tab_index.indexOf(active_tab)].className = 'is-active';
+            tab_detail(tab_name);
+        }
+    }
+
+    // show filtered photo
+    function tab_detail(tab_name) {
+        $('#photos').empty();
+        if (tab_name == 'semua') {
+            if (photos) {
+                for (var i = 0; i < photos.length; i++) {
+                    $('#photos').append(`
+                        <div class="column is-3" id="photo-` + photos[i].id_photo + `">
+                            <div class="card">
+                                <div class="card-image">
+                                    <a onclick="show_photo('` + photos[i].photo_url + `')">
+                                        <figure class="image">
+                                            <img src="` + photos[i].photo_url + `" alt="image">
+                                        </figure>
+                                    </a>
+                                </div>
+                                <div class="card-content" style="padding: 1em;">
+                                    <p>` + photos[i].photo_name + `</p>
+                                    <p class="subtitle is-6">` + photos[i].source_url + `</p>
+                                    <p>Impresi ` + photos[i].comment_impression + `</p>
+                                </div>
+                                <footer class="card-footer">
+                                    <a class="card-footer-item" onclick="edit_photo(` + photos[i].id_photo + `)">Edit</a>
+                                    <a class="card-footer-item" style="color: #FF3860;" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</a>
+                                </footer>
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+            else {
+                $('#photos').append('Belum ada foto yang ditambahkan');
+            }
+        }
+        else {
+            var checker = 0;
+            for (var i = 0; i < photos.length; i++) {
+                if (photos[i].comment_impression == tab_name) {
+                    checker = checker + 1;
+                    $('#photos').append(`
+                        <div class="column is-3" id="photo-` + photos[i].id_photo + `">
+                            <div class="card">
+                                <div class="card-image">
+                                    <a onclick="show_photo('` + photos[i].photo_url + `')">
+                                        <figure class="image">
+                                            <img src="` + photos[i].photo_url + `" alt="image">
+                                        </figure>
+                                    </a>
+                                </div>
+                                <div class="card-content" style="padding: 1em;">
+                                    <p>` + photos[i].photo_name + `</p>
+                                    <p class="subtitle is-6">` + photos[i].source_url + `</p>
+                                    <p>Impresi ` + photos[i].comment_impression + `</p>
+                                </div>
+                                <footer class="card-footer">
+                                    <a class="card-footer-item" onclick="edit_photo(` + photos[i].id_photo + `)">Edit</a>
+                                    <a class="card-footer-item" style="color: #FF3860;" onclick="delete_photo(` + photos[i].id_photo + `)">Hapus</a>
+                                </footer>
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+            if (checker == 0) {
+                $('#photos').append('Belum ada foto yang ditambahkan');
+            }
+        }
+    }
+
+    // name file upload
+    var file = document.getElementById('file');
+    file.onchange = function () {
+        if (file.files.length > 0) {
+            document.getElementById('filename').innerHTML = file.files[0].name;
+        }
+    };
+
+    $(() => {
+        show_photo = (url => {
+            $('#photo-full').empty();
+            $('#modal-photo').addClass('is-active');
+            $('#photo-full').append(`<img src="` + url + `" alt="image">`);
+        });
+
+        edit_photo = ((id) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/photos_collection/" + id,
+                success: ((response) => {
+                    $('#form_edit').attr('action', '/dashboard/photos_collection/edit/' + id);
+                    $('#id_edit').attr('value', id);
+                    $('#img_edit').attr('src', response.photo_url);
+                    $('#source_edit').attr('value', response.source_url);
+                    $('#impression_edit').val(response.comment_impression).attr('selected', 'selected');
+                    $('#modal-edit-photo').addClass('is-active');
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        delete_photo = (id => {
+            swal({
+                title: "Yakin ingin menghapus foto ?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/dashboard/photos_collection/delete/" + id,
+                            success: ((response) => {
+                                $('#photo-' + id).remove();
+                                swal("Foto telah berhasil di hapus", {
+                                    icon: "success"
+                                });
+                            }),
+                            error: ((error) => {
+                                console.log(error);
+                            })
+                        });
+                    }
+                });
+        });
+
+        $('#add-photo').click(() => $('#modal-add-photo').addClass('is-active'));
+        $('.delete').click(() => {
+            $('#modal-add-photo').removeClass('is-active');
+            $('#modal-edit-photo').removeClass('is-active');
+        });
+        $('.modal-close').click(() => $('#modal-photo').removeClass('is-active'));
+        $('.modal-background').click(() => {
+            $('#modal-add-photo').removeClass('is-active');
+            $('#modal-photo').removeClass('is-active');
+            $('#modal-edit-photo').removeClass('is-active');
+        });
+    });
+</script>
+
+<!-- end yield content -->
+{% endblock %}

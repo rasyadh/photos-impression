@@ -1,8 +1,39 @@
+import os
 import json
+import cv2
+import numpy as np
 
 class FeatureDataset:
     def _init_(self):
         return
+
+    def get_faces(self, FILE_PATH, size=None):
+        classifier = 'project/cascade/haarcascade_frontalface_default.xml'
+        face = None
+
+        # read image data
+        image = cv2.imread(FILE_PATH, 0)
+        # set cascade classifier 
+        face_cascade = cv2.CascadeClassifier(classifier)
+        # detect faces in image
+        faces = face_cascade.detectMultiScale(
+            image,
+            scaleFactor=1.5,
+            minNeighbors=5,
+            minSize=(50, 50),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+
+        # get face area only
+        for (x, y, w, h) in faces:
+            # default face dimension 182x182
+            face = image[y : (y + h), x : (x + w)]
+
+            # resize image
+            if (size is not None):
+                face = cv2.resize(face, (size, size))
+
+        return face
 
     def get_feature_jaffe(self, DATASET_PATH, FILE_PATH, size):
         with open(FILE_PATH) as dataset:

@@ -1,13 +1,13 @@
 <html>
 
 <head>
-    <title>{{ title }} | Impresi Foto</title>
+    <title>{{ title }} | Dashboard Impresi Foto</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Facial Expression" />
-    <meta name="theme-color" content="#209CEE">
+    <meta name="theme-color" content="#00D1B2">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='image/ImpresiFoto.png') }}" />
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bulma.css') }}" />
@@ -21,13 +21,13 @@
 
 <body>
     <!-- navbar -->
-    <nav class="navbar is-info is-transparent navbar-is-medium">
+    <nav class="navbar is-primary is-transparent navbar-is-medium">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item" href="/">
+                <a class="navbar-item" href="/dashboard/">
                     <img class="image" src="{{ url_for('static', filename='image/ImpresiFotoWhite.png') }}" alt="Logo">
                     <h1 class="title is-5 has-text-white">
-                        | Impresi Foto
+                        | Dashboard Impresi Foto
                     </h1>
                 </a>
                 <div class="navbar-burger burger" data-target="menu">
@@ -37,28 +37,23 @@
                 </div>
             </div>
             <div class="navbar-menu" id="menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="/expression_detection/">
-                        Deteksi Ekspresi
+                <div class="navbar-end">
+                    <a class="navbar-item" href="/dashboard/expression/">
+                        Ekspresi Wajah
                     </a>
-                    <a class="navbar-item" href="/photos/">
-                        Foto Percobaan
+                    <a class="navbar-item" href="/dashboard/feature_extraction/">
+                        Ekstraksi Fitur
                     </a>
-                    <a class="navbar-item" href="/detection_results/">
+                    <a class="navbar-item" href="/dashboard/photos_collection/">
+                        Koleksi Foto
+                    </a>
+                    <a class="navbar-item" href="/dashboard/detection_results/">
                         Hasil Percobaan
                     </a>
-                </div>
-                <div class="navbar-end">
                     <div class="navbar-item">
-                        {% if session['loggedin'] %}
-                        <a class="button is-info is-inverted is-outlined" href="/dashboard/">
-                            Dashboard
+                        <a class="button is-primary is-inverted is-outlined" href="/logout/">
+                            Keluar
                         </a>
-                        {% else %}
-                        <a class="button is-info is-inverted is-outlined" href="/login/">
-                            Masuk
-                        </a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,13 +69,13 @@
             <div class="level">
                 <div class="level-left">
                     <div class="level-item">
-                        &copy; 2017, Impresi Foto
+                        &copy; 2017, Dashboard Impresi Foto
                     </div>
                 </div>
                 <div class="level-right">
                     <div class="level-item">
                         <p>
-                            <strong>Impresi Foto</strong> by
+                            <strong>Dashboard Impresi Foto</strong> by
                             <a href="github.com/rasyadh">Rasyadh Abdul Aziz</a>
                         </p>
                     </div>

@@ -1,0 +1,146 @@
+<!-- yield content -->
+{% extends '/base.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Foto Percobaan
+            </h1>
+            <h2 class="subtitle">
+                Foto yang digunakan untuk percobaan deteksi ekspresi wajah.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- photo collection -->
+<section class="section">
+    <div class="container">
+        <div class="tabs is-centered">
+            <ul>
+                <li class="is-active">
+                    <a href="#semua" onclick="tab('semua')">Semua</a>
+                </li>
+                <li>
+                    <a href="#bahagia" onclick="tab('bahagia')">Bahagia</a>
+                </li>
+                <li>
+                    <a href="#sedih" onclick="tab('sedih')">Sedih</a>
+                </li>
+                <li>
+                    <a href="#terkejut" onclick="tab('terkejut')">Terkejut</a>
+                </li>
+            </ul>
+        </div>
+        <div class="columns is-multiline is-centered" id="photos"></div>
+    </div>
+</section>
+
+<!-- modal photo -->
+<div class="modal" id="modal-photo">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <figure class="image" id="photo-full"></figure>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
+<script>
+    // parse response to JSON
+    var photos = JSON.parse('{{ photos | tojson | safe }}');
+
+    // init tabs indicator
+    var tab_index = ['semua', 'bahagia', 'sedih', 'terkejut'];
+    var active_tab;
+    var tabs = $('li');
+    for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].className == 'is-active') {
+            active_tab = tab_index[i];
+            tab_detail(active_tab);
+        }
+    }
+
+    // set active tab
+    function tab(tab_name) {
+        if (active_tab == tab_name) {
+            active_tab = tab_name;
+            tab_detail(tab_name);
+        }
+        else {
+            tabs[tab_index.indexOf(active_tab)].className = '';
+            active_tab = tab_name;
+            tabs[tab_index.indexOf(active_tab)].className = 'is-active';
+            tab_detail(tab_name);
+        }
+    }
+
+    // show filtered photo
+    function tab_detail(tab_name) {
+        $('#photos').empty();
+        if (tab_name == 'semua') {
+            for (var i = 0; i < photos.length; i++) {
+                $('#photos').append(`
+                        <div class="column is-3">
+                            <a onclick="show_photo('` + photos[i].photo_url + `')">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <figure class="image">
+                                            <img src="` + photos[i].photo_url + `" alt="image">
+                                        </figure>
+                                    </div>
+                                    <div class="card-content" style="padding: 1em;">
+                                        <p>` + photos[i].photo_name + `</p>
+                                        <p class="subtitle is-6">` + photos[i].source_url + `</p>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <p class="card-footer-item">Impresi ` + photos[i].comment_impression + `</p>
+                                    </footer>
+                                </div>
+                            </a>
+                        </div>
+                    `);
+            }
+        }
+        else {
+            for (var i = 0; i < photos.length; i++) {
+                if (photos[i].comment_impression == tab_name) {
+                    $('#photos').append(`
+                            <div class="column is-3">
+                                <a onclick="show_photo('` + photos[i].photo_url + `')">
+                                    <div class="card">
+                                        <div class="card-image">
+                                            <figure class="image">
+                                                <img src="` + photos[i].photo_url + `" alt="image">
+                                            </figure>
+                                        </div>
+                                        <div class="card-content" style="padding: 1em;">
+                                            <p>` + photos[i].photo_name + `</p>
+                                            <p class="subtitle is-6">` + photos[i].source_url + `</p>
+                                        </div>
+                                        <footer class="card-footer">
+                                            <p class="card-footer-item">Impresi ` + photos[i].comment_impression + `</p>
+                                        </footer>
+                                    </div>
+                                </a>
+                            </div>
+                        `);
+                }
+            }
+        }
+    }
+
+    $(() => {
+        show_photo = (url => {
+            $('#photo-full').empty();
+            $('#modal-photo').addClass('is-active');
+            $('#photo-full').append(`<img src="` + url + `" alt="image">`);
+        });
+        $('.modal-close').click(() => $('#modal-photo').removeClass('is-active'));
+        $('.modal-background').click(() => $('#modal-photo').removeClass('is-active'));
+    });
+</script>
+
+<!-- end yield content -->
+{% endblock %}

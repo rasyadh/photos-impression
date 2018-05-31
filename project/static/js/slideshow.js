@@ -22,7 +22,7 @@ $(() => {
                 button: "Next",
             })
                 .then((value) => {
-                    window.location.href = '/detect_result';
+                    window.location.href = '/expression_detection/result/';
                 });
         }
     });

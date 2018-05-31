@@ -1,0 +1,48 @@
+<!-- yield content -->
+{% extends '/dashboard/base_dashboard.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Dashboard Impresi Foto
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- content -->
+<section class="section">
+    <div class="container">
+        <div class="columns has-text-centered">
+            <div class="column">
+                <a class="box" href="/dashboard/expression/">
+                    <p class="title is-4">Ekspresi Wajah</p>
+                    <p>Data ekspresi wajah.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/dashboard/feature_extraction/">
+                    <p class="title is-4">Ekstraksi Fitur</p>
+                    <p>Hasil ekstraksi fitur foto ekspresi wajah dengan menggunakan PCA.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/dashboard/photos_collection/">
+                    <p class="title is-4">Koleksi Foto</p>
+                    <p>Koleksi foto berdasarkan impresinya.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/dashboard/detection_results/">
+                    <p class="title is-4">Hasil Percobaan</p>
+                    <p>Hasil percobaan deteksi ekspresi yang telah dilakukan.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- end yield content -->
+{% endblock %}

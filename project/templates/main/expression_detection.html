@@ -1,0 +1,55 @@
+<!-- yield content -->
+{% extends '/base.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-info">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Deteksi Ekspresi Wajah
+            </h1>
+            <h2 class="subtitle">
+                Mendeteksi perubahan ekspresi wajah berdasarkan foto yang ditampilakan.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- content -->
+<section class="section">
+    <div class="container">
+        <h1 class="subtitle has-text-centered">
+            Pilih sistem slideshow foto berdasarkan impresi yang ditampilkan.
+        </h1>
+        <br>
+        <div class="columns has-text-centered">
+            <div class="column">
+                <a class="box" href="/expression_detection/1">
+                    <p class="title is-4">Foto Acak</p>
+                    <p>Penampilan foto slideshow secara acak.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/expression_detection/2">
+                    <p class="title is-4">Foto Bahagia</p>
+                    <p>Penampilan foto slideshow bahagia.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/expression_detection/3">
+                    <p class="title is-4">Foto Sedih</p>
+                    <p>Penampilan foto slideshow sedih.</p>
+                </a>
+            </div>
+            <div class="column">
+                <a class="box" href="/expression_detection/4">
+                    <p class="title is-4">Foto Terkejut</p>
+                    <p>Penampilan foto slideshow terkejut.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- end yield content -->
+{% endblock %}
