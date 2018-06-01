@@ -12,7 +12,7 @@ $(() => {
         slideIndex++;
         if (slideIndex <= slide.length) {
             slide[slideIndex - 1].style.display = "block";
-            setTimeout(carousel, 5000);
+            setTimeout(carousel, 2000);
         }
         else {
             swal({
