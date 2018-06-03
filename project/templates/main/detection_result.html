@@ -15,32 +15,52 @@
 <!-- result detection -->
 <section class="section">
     <div class="container">
-        <table class="table is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th>ID Foto</th>
-                    <th>Foto Percobaan</th>
-                    <th>Hasil Ekspresi</th>
-                    <th>Waktu Terdeteksi (detik)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if result %} {% for res in result %}
-                <tr>
-                    <td>{{ res.id_detection }}</td>
-                    <td>photos</td>
-                    <td>{{ res.result_expression }}</td>
-                    <td>{{ res.time_detected }}</td>
-                </tr>
-                {% endfor %} {% else %}
-                <tr>
-                    <td colspan="4">No result</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
+        <canvas id="chart_result"></canvas>
     </div>
 </section>
+
+<script>
+    let ctx = document.getElementById("chart_result").getContext("2d");
+    let time, result;
+    let id = `{{ id | safe }}`;
+
+    $.ajax({
+        type: "GET",
+        url: "/expression_detection/result_detection/" + id,
+        success: ((response) => {
+            time = response.map((data) => data.time_detected);
+            result = response.map((data) => data.result_expression)
+            create_chart(ctx, time, result);
+        }),
+        error: ((error) => console.log(error))
+    });
+
+    create_chart = (ctx, time, result) => {
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: time,
+                datasets: [{
+                    label: 'Ekspresi Wajah',
+                    data: result,
+                    steppedLine: true,
+                    backgroundColor: 'rgba(32, 156, 233, 0.2)',
+                    borderColor: 'rgba(32, 156, 233, 0.2)'
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }]
+                }
+            }
+        });
+    }
+</script>
 
 <!-- end yield content -->
 {% endblock %}

@@ -3,7 +3,8 @@ from flask import (
     Blueprint,
     render_template,
     redirect,
-    url_for
+    url_for,
+    jsonify
 )
 from sqlalchemy import desc
 from project.models import db
@@ -74,11 +75,28 @@ def result_expression_detection():
             desc(ResultDetection.id_result_detection)).first()
         id = result_detection.id_result_detection
 
-        detection = Detection.query.filter_by(id_result_detection=id).all()
     except Exception as e:
         print('error to get detection result')
         print(e)
 
     return render_template('main/detection_result.html', 
-        title="Hasil Deteksi Ekspresi", result=detection)
+        title="Hasil Deteksi Ekspresi", id=id)
     
+@detect.route('/expression_detection/result_detection/<string:id>')
+def get_result_expression_detection(id):
+    try:
+        detection = Detection.query.filter_by(id_result_detection=int(id)).all()
+        result, data = [], {}
+
+        for d in detection:
+            data = {
+                'result_expression': d.result_expression,
+                'time_detected': d.time_detected
+            }
+            
+            result.append(data)
+            data = {}
+    except Exception as e:
+        print(e)
+    
+    return jsonify(result)
