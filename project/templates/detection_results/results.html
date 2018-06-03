@@ -65,7 +65,8 @@
                 </li>
             </ul>
         </div> -->
-        <!-- <canvas id="chart_result"></canvas> -->
+        <canvas id="chart_result"></canvas>
+        <br />
         <table class="table is-hoverable is-fullwidth" id="table_result">
             <thead>
                 <tr>
@@ -80,7 +81,8 @@
 </section>
 
 <script>
-    let detail, label, data;
+    let detail, time, result;
+    let ctx = document.getElementById("chart_result").getContext("2d");
 
     $(() => {
         detail_result = ((id, date) => {
@@ -89,8 +91,9 @@
                 url: "/detection_results/" + id,
                 success: ((response) => {
                     detail = response;
-                    label = detail.map((data) => data.time_detected)
-                    data = detail.map((data) => data.result_expression)
+                    time = detail.map((data) => data.time_detected)
+                    result = detail.map((data) => data.result_expression)
+                    create_chart(ctx, time, result);
                     detail_table(date);
                     $('#result_table').hide();
                     $('#detail_result_table').show();
@@ -98,6 +101,32 @@
                 error: ((error) => console.log(error))
             });
         });
+
+        create_chart = (ctx, time, result) => {
+            let chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: time,
+                    datasets: [{
+                        label: 'Ekspresi Wajah',
+                        data: result,
+                        steppedLine: true,
+                        backgroundColor: 'rgba(32, 156, 233, 0.2)',
+                        borderColor: 'rgba(32, 156, 233, 0.2)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }]
+                    }
+                }
+            });
+        }
 
         detail_table = (date) => {
             $('#detection_date').html(date);
@@ -118,29 +147,6 @@
             $('#result_table').show();
         };
     });
-
-    /**
-    let ctx = document.getElementById("chart_result").getContext("2d");
-    let chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data,
-            dataset: [{
-                data: label,
-                label: "Perubahan Ekspresi",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-            }]
-        },
-        options: {
-            scaleStartValue: 0
-        }
-    });
-    **/
 </script>
 
 <!-- end yield content -->
