@@ -1,4 +1,5 @@
 import random
+import operator
 from flask import (
     Blueprint,
     render_template,
@@ -6,6 +7,7 @@ from flask import (
     url_for,
     jsonify
 )
+from project import globals_var
 from sqlalchemy import desc
 from project.models import db
 from project.models.result_detection import ResultDetection
@@ -70,11 +72,46 @@ def generate_slide(id):
 
 @detect.route('/expression_detection/result/')
 def result_expression_detection():
+    print(globals_var.FER_DETECTED)
+    result = {}
+
+    for key, value in globals_var.FER_DETECTED.items():
+        sec = int(str(key).split('.')[0]) + 1
+
+        if sec not in result.keys():
+            result[sec] = []
+
+        if sec in result.keys():
+            result.get(sec).append(value)
+
+    for key, value in result.items():
+        if len(value) > 1:
+            temp = {}
+            unique = list(set(value))
+
+            for i in unique:
+                temp[i] = value.count(i)
+            
+            result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
+        else:
+            result[key] = value[0]
+        
+    print(result)
+
     try:
         result_detection = ResultDetection.query.order_by(
             desc(ResultDetection.id_result_detection)).first()
         id = result_detection.id_result_detection
 
+        if result:
+            for key, value in result.items():
+                detection = Detection(
+                    id_result_detection=id,
+                    result_expression=int(value),
+                    time_detected=key
+                )
+                db.session.add(detection)
+                db.session.commit()
     except Exception as e:
         print('error to get detection result')
         print(e)

@@ -15,6 +15,7 @@ $(() => {
             setTimeout(carousel, 2000);
         }
         else {
+            $('#slides').empty();
             swal({
                 title: "Selesai",
                 text: "Deteksi ekspresi wajah selesai dilakukan",
