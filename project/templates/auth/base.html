@@ -15,8 +15,6 @@
 
     <script src="{{ url_for('static', filename='js/font-awesome-all.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/sweetalert.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
 </head>
 
 <body>
@@ -34,31 +32,6 @@
                     <span></span>
                     <span></span>
                     <span></span>
-                </div>
-            </div>
-            <div class="navbar-menu" id="menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" href="/expression_detection/">
-                        Deteksi Ekspresi
-                    </a>
-                    <a class="navbar-item" href="/photos/">
-                        Foto Percobaan
-                    </a>
-                    <a class="navbar-item" href="/detection_results/">
-                        Hasil Percobaan
-                    </a>
-                </div>
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        {{ session['loggedin'] }}
-                    </div>
-                    <div class="navbar-item">
-                        {% if session['loggedin'] %}
-                        <a class="button is-info is-inverted is-outlined" href="/logout/">
-                            Keluar
-                        </a>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </div>

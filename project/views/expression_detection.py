@@ -7,7 +7,8 @@ from flask import (
     redirect,
     url_for,
     jsonify,
-    request
+    request,
+    session
 )
 from project import globals_var
 from sqlalchemy import desc
@@ -20,8 +21,11 @@ detect = Blueprint('detect', __name__)
 
 @detect.route('/expression_detection/')
 def index():
-    return render_template('main/expression_detection.html', 
-        title="Deteksi Ekspresi")
+    if session.get('loggedin'):    
+        return render_template('main/expression_detection.html', 
+            title="Deteksi Ekspresi")
+    else:
+        return redirect(url_for('auth.login'))
 
 @detect.route('/expression_detection/<int:id>')
 def expression_detection(id):

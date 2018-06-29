@@ -28,8 +28,7 @@ def index():
             print('error to get detection result')
             print(e)
 
-    # return redirect(url_for('auth.login'))
-    print('sefs')
+    return redirect(url_for('auth.login_admin'))
 
 @dashboard_results.route('/dashboard/detection_results/<string:id>')
 def result_detail(id):

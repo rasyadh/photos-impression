@@ -10,8 +10,8 @@ dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/dashboard/')
 def index():
-    if session.get('loggedin'):
+    if session.get('loggedin_admin'):
         return render_template('dashboard/index.html', 
             title="Dashboard Page")
     else:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login_admin'))

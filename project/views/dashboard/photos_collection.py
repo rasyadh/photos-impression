@@ -45,7 +45,7 @@ def index():
         return render_template('dashboard/photos_collection.html', 
             title="Koleksi Foto", photos=result)
     else:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login_admin'))
 
 @dashboard_photos.route('/dashboard/photos_collection/add', methods=['POST'])
 def add_photo():

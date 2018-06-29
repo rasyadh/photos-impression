@@ -31,7 +31,7 @@ def index():
         return render_template('dashboard/feature_extraction.html', 
             title="Ekstraksi Fitur", datasets=data)
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login_admin'))
 
 @extraction.route('/dashboard/feature_extraction/read_dataset', methods=['GET'])
 def read_dataset():

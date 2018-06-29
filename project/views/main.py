@@ -1,9 +1,16 @@
-from flask import Blueprint
-from flask import render_template
+from flask import (
+    Blueprint,
+    render_template,
+    session,
+    redirect,
+    url_for
+)
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('main/index.html', 
-        title="Home")
+    if session.get('loggedin'):
+        return render_template('main/index.html', title="Home")
+    else:
+        return redirect(url_for('auth.login'))

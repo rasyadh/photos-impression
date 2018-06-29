@@ -25,7 +25,7 @@ def index():
         return render_template('dashboard/expression.html', 
             title="Data Ekspresi", expression=expression)
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login_admin'))
 
 @expression.route('/dashboard/expression/<string:id>', methods=['GET'])
 def get_expression(id):
