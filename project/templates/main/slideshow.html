@@ -22,17 +22,24 @@
         <div class="slideshow-wrapper">
             {% for slide in slides %}
             <figure class="image-slide fade has-text-centered" id="img-slide">
-                <img class="slide" src="{{ slide.photo_url }}" />
+                <img class="slide" id="{{ slide.id }}" src="{{ slide.photo_url }}" />
             </figure>
             {% endfor %}
         </div>
     </div>
 
     <img class="video_frame" id="slides" src="{{ url_for('stream.feed_stream') }}" />
+    
+    <form id="submit" action="/expression_detection/result/" method="post">
+        <input type="hidden" name="data" id="datajson">
+        <input type="hidden" name="photos" id="photosjson">
+    </form>
 </section>
 
 <!-- script slideshow -->
-<script src="{{url_for('static', filename='js/slideshow.js') }}"></script>
+<!-- <script src="{{url_for('static', filename='js/slideshow.js') }}"></script> -->
+<script src="{{url_for('static', filename='js/socket.io.js')}}"></script>
+<script src="{{url_for('static', filename='js/slides.js') }}"></script>
 
 <!-- end yield content -->
 {% endblock %}

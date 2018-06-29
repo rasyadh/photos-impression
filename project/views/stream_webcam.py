@@ -1,5 +1,6 @@
 import json
 from time import time
+import requests
 from flask import (
     Blueprint,
     Response
@@ -38,6 +39,7 @@ def generate(detect, pca, classifier, svm):
 
     while True: 
         feature_test = []
+        result_expression = []
         face = None
         label_pred = None
 
@@ -54,6 +56,10 @@ def generate(detect, pca, classifier, svm):
 
             globals_var.FER_DETECTED[endtime] = label_pred
             print("{0}: {1}".format(endtime, label_pred))
+
+            result_expression.append(label_pred)
+
+            requests.get("http://localhost:3000/kirimData?data="+json.dumps(result_expression, indent=4, default=str)).json()
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' 
             + frame + b'\r\n')

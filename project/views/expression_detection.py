@@ -1,11 +1,13 @@
 import random
 import operator
+import json
 from flask import (
     Blueprint,
     render_template,
     redirect,
     url_for,
-    jsonify
+    jsonify,
+    request
 )
 from project import globals_var
 from sqlalchemy import desc
@@ -70,48 +72,66 @@ def generate_slide(id):
 
     return choiche
 
-@detect.route('/expression_detection/result/')
+@detect.route('/expression_detection/result/', methods=['POST'])
 def result_expression_detection():
+    time_dict = {}
+    photos_dict = {}
     result = {}
 
-    for key, value in globals_var.FER_DETECTED.items():
-        sec = int(str(key).split('.')[0]) + 1
+    if request.method == 'POST':
+        expression_result = request.form['data']
+        photos_slide = request.form['photos']
+        expression_result = json.loads(expression_result)
+        photos_slide = json.loads(photos_slide)
+        print(expression_result)
+        print(photos_slide)
+        print()
+        
+        for i in range(len(expression_result)):
+            key = expression_result[i]['time'].split(".")
+            sec = int(key[0]) + 1
 
-        if sec not in result.keys():
-            result[sec] = []
+            if sec not in time_dict:
+                time_dict[sec] = [expression_result[i]['expression']]
+                photos_dict[sec] = expression_result[i]['id_photos']
+            else:
+                time_dict[sec].append(expression_result[i]['expression'])
 
-        if sec in result.keys():
-            result.get(sec).append(value)
+        for key, value in time_dict.items():
+            if len(value) > 1:
+                temp = {}
+                unique = list(set(value))
 
-    for key, value in result.items():
-        if len(value) > 1:
-            temp = {}
-            unique = list(set(value))
+                for i in unique:
+                    temp[i] = value.count(i)
 
-            for i in unique:
-                temp[i] = value.count(i)
-            
-            result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
-        else:
-            result[key] = value[0]
+                result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
+            else:
+                result[key] = value[0]
 
-    try:
-        result_detection = ResultDetection.query.order_by(
-            desc(ResultDetection.id_result_detection)).first()
-        id = result_detection.id_result_detection
+        print(result)
+        print()
+        print(photos_dict)
+        print()
 
-        if result:
-            for key, value in result.items():
-                detection = Detection(
-                    id_result_detection=id,
-                    result_expression=int(value),
-                    time_detected=key
-                )
-                db.session.add(detection)
-                db.session.commit()
-    except Exception as e:
-        print('error to get detection result')
-        print(e)
+        try:
+            result_detection = ResultDetection.query.order_by(
+                desc(ResultDetection.id_result_detection)).first()
+            id = result_detection.id_result_detection
+
+            if result:
+                for key, value in result.items():
+                    detection = Detection(
+                        id_result_detection=id,
+                        id_photo=int(photos_dict[key]),
+                        result_expression=int(value),
+                        time_detected=key
+                    )
+                    db.session.add(detection)
+                    db.session.commit()
+        except Exception as e:
+            print('error to get detection result')
+            print(e)
 
     return render_template('main/detection_result.html', 
         title="Hasil Deteksi Ekspresi", id=id)
