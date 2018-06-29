@@ -55,28 +55,7 @@
                 <p class="subtitle" id="detection_date"></p>
             </div>
         </div>
-        <!-- <div class="tabs is-centered">
-            <ul>
-                <li class="is-active">
-                    <a>Tabel</a>
-                </li>
-                <li>
-                    <a>Grafik</a>
-                </li>
-            </ul>
-        </div> -->
         <canvas id="chart_result"></canvas>
-        <br />
-        <table class="table is-hoverable is-fullwidth" id="table_result">
-            <thead>
-                <tr>
-                    <th>Ekspresi</th>
-                    <th>Waktu</th>
-                </tr>
-            </thead>
-            <tbody id="result_table_body">
-            </tbody>
-        </table>
     </div>
 </section>
 
@@ -94,7 +73,7 @@
                     time = detail.map((data) => data.time_detected)
                     result = detail.map((data) => data.result_expression)
                     create_chart(ctx, time, result);
-                    detail_table(date);
+                    $('#detection_date').html(date);
                     $('#result_table').hide();
                     $('#detail_result_table').show();
                 }),
@@ -127,18 +106,6 @@
                 }
             });
         }
-
-        detail_table = (date) => {
-            $('#detection_date').html(date);
-            detail.map((data) => {
-                $('#result_table_body').append(`
-                    <tr>
-                        <td>` + data.result_expression + `</td>
-                        <td>` + data.time_detected + `</td>
-                    </tr>
-                `);
-            });
-        };
 
         back = () => {
             detail = null;

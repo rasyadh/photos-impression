@@ -28,7 +28,7 @@ def index():
         print(e)
 
     return render_template('detection_results/results.html', 
-        title="Hasil Percobaan", results=results, data=data)
+        title="Hasil Percobaan", results=results, data=data.reverse())
 
 @result.route('/detection_results/<string:id>')
 def result_detail(id):

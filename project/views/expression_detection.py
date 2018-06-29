@@ -72,7 +72,6 @@ def generate_slide(id):
 
 @detect.route('/expression_detection/result/')
 def result_expression_detection():
-    print(globals_var.FER_DETECTED)
     result = {}
 
     for key, value in globals_var.FER_DETECTED.items():
@@ -95,8 +94,6 @@ def result_expression_detection():
             result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
         else:
             result[key] = value[0]
-        
-    print(result)
 
     try:
         result_detection = ResultDetection.query.order_by(

@@ -72,9 +72,9 @@ class FeatureDataset:
                 for subdirname in dirnames:
                     subject_path = os.path.join(dirname, subdirname)
                     for filename in os.listdir(subject_path):
-                        if subdirname == 'HA':
+                        if subdirname == 'NE':
                             id_expression = 0
-                        elif subdirname == 'NE':
+                        elif subdirname == 'HA':
                             id_expression = 1
                         elif subdirname == 'SA':
                             id_expression = 2

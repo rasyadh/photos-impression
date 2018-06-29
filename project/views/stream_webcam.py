@@ -9,10 +9,6 @@ from project import globals_var
 from project.lib.eigenfaces import Eigenfaces
 from project.lib.svm import SupportVectorMachine
 from project.lib.face_detection import FaceDetection
-# from project.models import db
-# from sqlalchemy import desc
-# from project.models.result_detection import ResultDetection
-# from project.models.detection import Detection
 
 stream = Blueprint('stream', __name__)
 
