@@ -87,6 +87,7 @@ def result_expression_detection():
         print(photos_slide)
         print()
         
+        '''
         for i in range(len(expression_result)):
             key = expression_result[i]['time'].split(".")
             sec = int(key[0]) + 1
@@ -108,18 +109,25 @@ def result_expression_detection():
                 result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
             else:
                 result[key] = value[0]
-
-        print(result)
-        print()
-        print(photos_dict)
-        print()
+        '''
 
         try:
             result_detection = ResultDetection.query.order_by(
                 desc(ResultDetection.id_result_detection)).first()
             id = result_detection.id_result_detection
 
-            if result:
+            if expression_result:
+                for expr in expression_result:
+                    detection = Detection(
+                        id_result_detection=id,
+                        id_photo=int(expr['id_photos']),
+                        result_expression=int(expr['expression']),
+                        time_detected=expr['time']
+                    )
+
+                    db.session.add(detection)
+                    db.session.commit()
+                '''
                 for key, value in result.items():
                     detection = Detection(
                         id_result_detection=id,
@@ -127,8 +135,7 @@ def result_expression_detection():
                         result_expression=int(value),
                         time_detected=key
                     )
-                    db.session.add(detection)
-                    db.session.commit()
+                '''
         except Exception as e:
             print('error to get detection result')
             print(e)

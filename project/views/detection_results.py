@@ -10,25 +10,20 @@ result = Blueprint('result', __name__)
 
 @result.route('/detection_results/')
 def index():
+    slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
+
     try:
         results = ResultDetection.query.all()
 
-        data = []
         for r in results:
-            temp = {
-                'id_result_detection': r.id_result_detection,
-                'category_photos': r.category_photos,
-                'created_at': str(r.created_at)
-            }
-            data.append(temp)
-            temp = {}
+            r.category_photos = slides[r.category_photos].capitalize()
 
     except Exception as e:
         print('error to get detection result')
         print(e)
 
     return render_template('detection_results/results.html', 
-        title="Hasil Percobaan", results=results, data=data.reverse())
+        title="Hasil Percobaan", results=list(reversed(results)))
 
 @result.route('/detection_results/<string:id>')
 def result_detail(id):

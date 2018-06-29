@@ -22,19 +22,19 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Tanggal Percobaan</th>
-                    <th>Hasil</th>
+                    <th>Waktu Percobaan</th>
+                    <th>Kategori Foto</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% if results %} {% for res in results %}
                 <tr>
-                    <td>{{ res.id_result_detection }}</td>
+                    <td>{{ results.index(res) + 1 }}</td>
                     <td>{{ res.created_at }}</td>
-                    <td>Hasil</td>
+                    <td>{{ res.category_photos }}</td>
                     <td>
-                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}')">Detail</button>
+                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}', '{{ res.category_photos }}')">Detail</button>
                     </td>
                 </tr>
                 {% endfor %} {% else %}
@@ -52,7 +52,32 @@
                 <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
             </div>
             <div class="column">
+                <p class="subtitle" id="category"></p>
+            </div>
+            <div class="column">
                 <p class="subtitle" id="detection_date"></p>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="notification">
+                    0 : Netral
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    1 : Bahagia
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    2 : Sedih
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    3 : Terkejut
+                </div>
             </div>
         </div>
         <canvas id="chart_result"></canvas>
@@ -64,7 +89,7 @@
     let ctx = document.getElementById("chart_result").getContext("2d");
 
     $(() => {
-        detail_result = ((id, date) => {
+        detail_result = ((id, date, category) => {
             $.ajax({
                 type: "GET",
                 url: "/dashboard/detection_results/" + id,
@@ -72,8 +97,10 @@
                     detail = response;
                     time = detail.map((data) => data.time_detected)
                     result = detail.map((data) => data.result_expression)
+
                     create_chart(ctx, time, result);
-                    $('#detection_date').html(date);
+                    $('#detection_date').html('Waktu Percobaan ' + date);
+                    $('#category').html('Kategori Foto ' + category);
                     $('#result_table').hide();
                     $('#detail_result_table').show();
                 }),

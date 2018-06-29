@@ -31,8 +31,7 @@ def feed_stream():
     svm = SupportVectorMachine()
     classifier = svm.train(data_train)
 
-    return Response(generate(FaceDetection(), pca, classifier, svm), 
-        mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate(FaceDetection(), pca, classifier, svm),    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate(detect, pca, classifier, svm):
     t0 = time()

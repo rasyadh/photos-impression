@@ -13,12 +13,17 @@ dashboard_results = Blueprint('dashboard_results', __name__)
 
 @dashboard_results.route('/dashboard/detection_results/')
 def index():
+    slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
+
     if session.get('loggedin'):
         try:
             results = ResultDetection.query.all()
 
+            for r in results:
+                r.category_photos = slides[r.category_photos].capitalize()
+
             return render_template('dashboard/detection_results.html', 
-                title='Hasil Percobaan', results=results)
+                title='Hasil Percobaan', results=list(reversed(results)))
         except Exception as e:
             print('error to get detection result')
             print(e)
