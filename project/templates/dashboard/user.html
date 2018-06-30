@@ -1,0 +1,91 @@
+<!-- yield content -->
+{% extends '/dashboard/base_dashboard.html' %} {% block content %}
+
+<!-- hero -->
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Pengguna
+            </h1>
+            <h2 class="subtitle">
+                Manajemen pengguna aplikasi.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<!-- result detection -->
+<section class="section">
+    <div class="container" id="result_table">
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Tanggal Pembuatan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if users %} {% for user in users %}
+                <tr>
+                    <td>{{ user.id_user }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.created_at }}</td>
+                    <td>
+                        <button class="button is-info" onclick="detail_user('{{ user.id_user }}', '{{ user.created_at }}', '{{ user.username }}')">Detail</button>
+                    </td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="4" class="has-text-centered">Belum ada hasil percobaan</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!--
+    <div class="container" id="detail_result_table" style="display: none;">
+        <div class="columns">
+            <div class="column">
+                <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
+            </div>
+            <div class="column">
+                <p class="subtitle" id="category"></p>
+            </div>
+            <div class="column">
+                <p class="subtitle" id="detection_date"></p>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="notification">
+                    0 : Netral
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    1 : Bahagia
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    2 : Sedih
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification">
+                    3 : Terkejut
+                </div>
+            </div>
+        </div>
+        <canvas id="chart_result"></canvas>
+    </div>
+    -->
+
+</section>
+
+<!-- end yield content -->
+{% endblock %}

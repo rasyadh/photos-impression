@@ -26,6 +26,8 @@ from project.views.dashboard.expression import expression
 from project.views.dashboard.feature_extraction import extraction
 from project.views.dashboard.photos_collection import dashboard_photos
 from project.views.dashboard.detection_results import dashboard_results
+from project.views.dashboard.user import user
+from project.views.dashboard.statistic import statistic
 
 app.register_blueprint(main)
 app.register_blueprint(detect)
@@ -39,3 +41,5 @@ app.register_blueprint(expression)
 app.register_blueprint(extraction)
 app.register_blueprint(dashboard_photos)
 app.register_blueprint(dashboard_results)
+app.register_blueprint(user)
+app.register_blueprint(statistic)
