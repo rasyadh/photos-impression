@@ -17,6 +17,7 @@ this application runs on a web platform by utilizing several technologies of web
 ## Web Technology
 [Flask Microframework](http://flask.pocoo.org/)<br>
 [Flask SQLAlchemy](flask-sqlalchemy.pocoo.org/)<br>
+[Socket IO](https://socket.io/)<br>
 [Bulma CSS framework](https://bulma.io/)<br>
 [jQuery](https://jquery.com/)<br>
 [Font Awesome](https://fontawesome.com/)<br>
@@ -36,5 +37,5 @@ this application runs on a web platform by utilizing several technologies of web
 [Unsplash](https://unsplash.com)
 
 ## How to launch the app
-1. Install all dependencies
+1. Install all dependencies `pip install -r requirements.txt`
 2. Run `python run.py` at root directory
