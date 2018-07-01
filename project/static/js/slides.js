@@ -1,24 +1,37 @@
-var socket = io.connect('http://localhost:3001/adminSocket');
-var id_photos = null;
-var result_expression = new Array()
-var hasil;
-var startTime, currentTime, time;
-var photos = new Array();
+let socket = io.connect('http://localhost:3001/adminSocket');
+let id_photos = null;
+let result_expression = new Array()
+let hasil;
+let startTime, currentTime, time;
+let photos = new Array();
 
-$(document).ready(function () {
-    $('#slideshow').hide();
+$('#slideshow').hide();
+
+$(() => {
+    $('#play').removeAttr('disabled');
+    $('#play').click(() => {
+        $('#play').hide();
+        $('#slideshow').show();
+    
+        $('html, body').animate({
+            scrollTop: $('#slideshow').offset().top
+        }, 1);
+    
+        startTime = Date.now();
+        carousel();
+    });
 });
 
-var slideindex = 0
-socket.on('data', function (data) {
+let slideindex = 0
+socket.on('data', (data) => {
     currentTime = Date.now();
     time = msToSecond(currentTime - startTime);
 
-    var json = JSON.parse(data);
-    
-    result = { 
-        "id_photos": id_photos, 
-        "time": time, 
+    let json = JSON.parse(data);
+
+    result = {
+        "id_photos": id_photos,
+        "time": time,
         "expression": json[0]
     }
 
@@ -27,30 +40,22 @@ socket.on('data', function (data) {
     }
 });
 
-$('#play').click(() => {
-    $('#play').hide();
-    $('#slideshow').show();
-
-    startTime = Date.now();
-    carousel();
-});
-
-function msToSecond(s) {
-    var ms = s % 1000;
+const msToSecond = ((s) => {
+    let ms = s % 1000;
     s = (s - ms) / 1000;
 
-    var secs = s % 60;
+    let secs = s % 60;
     s = (s - secs) / 60;
 
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
+    let mins = s % 60;
+    let hrs = (s - mins) / 60;
 
     return secs + '.' + ms;
-}
+});
 
-function carousel() {
-    var i;
-    var slide = document.getElementsByClassName("image-slide");
+const carousel = (() => {
+    let i;
+    let slide = document.getElementsByClassName("image-slide");
 
     for (i = 0; i < slide.length; i++) {
         slide[i].style.display = "none";
@@ -66,10 +71,11 @@ function carousel() {
         console.log(result_expression)
     }
     else {
-        document.getElementsByClassName('video_frame').display = 'none';
-        document.getElementsByClassName('video_frame').src = "";
+        $('#slides').attr('src', '');
+        $('#slides').removeAttr('src');
+        $('#slides').hide();
 
-        var data_json = JSON.stringify(result_expression);
+        let data_json = JSON.stringify(result_expression);
         document.getElementById('datajson').value = data_json;
         document.getElementById('photosjson').value = JSON.stringify(photos)
         console.log(data_json)
@@ -82,9 +88,9 @@ function carousel() {
             button: "Next",
         })
             .then((value) => {
-                $(document).ready(function(){
+                $(document).ready(function () {
                     $('#submit').submit();
                 });
             });
     }
-}
+});

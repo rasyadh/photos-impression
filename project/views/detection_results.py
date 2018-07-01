@@ -17,7 +17,7 @@ def index():
         slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
 
         try:
-            results = ResultDetection.query.all()
+            results = ResultDetection.query.filter_by(id_user=session['loggedin']['id_user']).all()
 
             for r in results:
                 r.category_photos = slides[r.category_photos].capitalize()

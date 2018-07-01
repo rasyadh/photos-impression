@@ -17,6 +17,12 @@
     <div class="container">
         <div class="columns is-centered">
             <div class="column is-half is-narrow">
+                {% if error %}
+                <div class="notification is-danger">
+                    <button class="delete"></button>
+                    {{ error }}
+                </div>
+                {% endif %}
                 <form class="form" method="POST" action="{{ url_for('auth.login_admin') }}">
                     <div class="field">
                         <label class="label">Username</label>
@@ -47,6 +53,20 @@
         </div>
     </div>
 </section>
+
+<script>
+    if (`{{ error | safe }}` != 'None') {
+        setTimeout(() => {
+            $('.notification').fadeOut();
+        }, 1000);
+    }
+
+    $(() => {
+        $('.delete').click(() => {
+            $('.notification').fadeOut();
+        });
+    });
+</script>
 
 <!-- end yield content -->
 {% endblock %}

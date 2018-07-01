@@ -22,6 +22,7 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>ID</th>
                     <th>Waktu Percobaan</th>
                     <th>Kategori Foto</th>
                     <th>Aksi</th>
@@ -31,6 +32,7 @@
                 {% if results %} {% for res in results %}
                 <tr>
                     <td>{{ results.index(res) + 1 }}</td>
+                    <td>{{ res.id_result_detection }}</td>
                     <td>{{ res.created_at }}</td>
                     <td>{{ res.category_photos }}</td>
                     <td>

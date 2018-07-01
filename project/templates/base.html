@@ -50,7 +50,7 @@
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        {{ session['loggedin'] }}
+                        {{ session['loggedin']['username'] }}
                     </div>
                     <div class="navbar-item">
                         {% if session['loggedin'] %}

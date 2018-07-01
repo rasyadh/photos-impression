@@ -11,7 +11,7 @@
             <h2 class="subtitle">
                 Pilih tombol mulai disaat perekaman wajah telah berjalan.
             </h2>
-            <button id="play" class="button is-primary">Mulai</button>
+            <button id="play" class="button is-primary" disabled>Mulai</button>
         </div>
     </div>
 </section>
@@ -31,13 +31,14 @@
     <img class="video_frame" id="slides" src="{{ url_for('stream.feed_stream') }}" />
     
     <form id="submit" action="/expression_detection/result/" method="post">
+        <input type="hidden" name="id_res_det" value="{{ id_res_det }}">
+        <input type="hidden" name="category" value="{{ category }}">
         <input type="hidden" name="data" id="datajson">
         <input type="hidden" name="photos" id="photosjson">
     </form>
 </section>
 
 <!-- script slideshow -->
-<!-- <script src="{{url_for('static', filename='js/slideshow.js') }}"></script> -->
 <script src="{{url_for('static', filename='js/socket.io.js')}}"></script>
 <script src="{{url_for('static', filename='js/slides.js') }}"></script>
 

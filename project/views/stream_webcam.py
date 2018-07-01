@@ -1,12 +1,10 @@
 import json
-from time import time
 import requests
 from flask import (
     Blueprint,
     Response
 )
 from project import app
-from project import globals_var
 from project.lib.eigenfaces import Eigenfaces
 from project.lib.svm import SupportVectorMachine
 from project.lib.face_detection import FaceDetection
@@ -18,7 +16,6 @@ def feed_stream():
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
     FEATURE_FILE_PATH = DATASET_PATH + 'eigenfaces_jaffe_dataset.json'
     FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
-    globals_var.FER_DETECTED = {}
 
     with open(FEATURE_FILE_PATH) as data:
         data_train = json.load(data)
@@ -34,8 +31,6 @@ def feed_stream():
     return Response(generate(FaceDetection(), pca, classifier, svm),    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate(detect, pca, classifier, svm):
-    t0 = time()
-
     while True: 
         feature_test = []
         result_expression = []
@@ -51,10 +46,7 @@ def generate(detect, pca, classifier, svm):
             data_test = pca.transform(feature_test)
             label_pred = svm.predict(classifier, data_test)[0]
 
-            endtime = float("{:.3f}".format(time() - t0))
-
-            globals_var.FER_DETECTED[endtime] = label_pred
-            print("{0}: {1}".format(endtime, label_pred))
+            print("expression : {0}".format(label_pred))
 
             result_expression.append(label_pred)
 
