@@ -16,7 +16,7 @@ extraction = Blueprint('extraction', __name__)
 
 @extraction.route('/dashboard/feature_extraction/')
 def index():
-    if session.get('loggedin'):
+    if session.get('loggedin_admin'):
         data = None
         DATASET_FILE_PATH = app.root_path + '\\static\image\dataset\jaffe-jpg\dataset_jaffe.json'
 

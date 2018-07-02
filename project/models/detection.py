@@ -11,7 +11,6 @@ class Detection(db.Model):
     id_result_detection = db.Column(db.Integer, db.ForeignKey('result_detection.id_result_detection'))
     id_photo = db.Column(db.Integer, db.ForeignKey('photos.id_photo'))
     time_detected = db.Column(db.Float, nullable=False)
-    initial_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
     result_expression = db.Column(db.Integer, db.ForeignKey('expression.id_expression'))
 
     def __repr__(self):

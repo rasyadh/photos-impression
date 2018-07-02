@@ -18,7 +18,7 @@ dashboard_photos = Blueprint('dashboard_photos', __name__)
 
 @dashboard_photos.route('/dashboard/photos_collection/')
 def index():
-    if session.get('loggedin'):
+    if session.get('loggedin_admin'):
         try:
             photos = Photos.query.all()
             impresi = { 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }

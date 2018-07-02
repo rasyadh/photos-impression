@@ -15,7 +15,7 @@ dashboard_results = Blueprint('dashboard_results', __name__)
 def index():
     slides = { 1: 'acak', 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
 
-    if session.get('loggedin'):
+    if session.get('loggedin_admin'):
         try:
             results = ResultDetection.query.all()
 

@@ -15,7 +15,7 @@ expression = Blueprint('expression', __name__)
 
 @expression.route('/dashboard/expression/')
 def index():
-    if session.get('loggedin'):
+    if session.get('loggedin_admin'):
         try:
             expression = Expression.query.all()
         except Exception as e:
