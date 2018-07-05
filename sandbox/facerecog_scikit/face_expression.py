@@ -22,6 +22,8 @@ with open('feature_dataset.json') as dataset:
     jaffe_data = json.load(dataset)
     dataset.close()
 
+print(jaffe_data)
+
 X = np.asarray(jaffe_data['data'])
 y = np.asarray(jaffe_data['target'])
 

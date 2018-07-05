@@ -5,7 +5,7 @@ class SupportVectorMachine:
     def __init__(self):
         return
 
-    def train(self, data):
+    def train(self, data, label):
         print("fitting the classifier to the training set")
 
         param_grid = {
@@ -15,7 +15,8 @@ class SupportVectorMachine:
         
         clf = GridSearchCV(SVC(
             kernel='rbf', class_weight='balanced'), param_grid)
-        clf = clf.fit(data['eigenvectors'], data['label'])
+        #clf = clf.fit(data['eigenvectors'], data['label'])
+        clf = clf.fit(data, label)
 
         print("Best estimator found by grid search:")
         print(clf.best_estimator_)

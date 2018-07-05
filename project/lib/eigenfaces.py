@@ -57,4 +57,6 @@ class Eigenfaces:
             self.n_components, 50, 50
         ))
 
-        return pca
+        eigenvectors_train = pca.transform(dataset['data'])
+
+        return pca, eigenvectors_train

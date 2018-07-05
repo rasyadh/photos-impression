@@ -14,19 +14,23 @@ stream = Blueprint('stream', __name__)
 @stream.route('/feed_stream/')
 def feed_stream():
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
-    FEATURE_FILE_PATH = DATASET_PATH + 'eigenfaces_jaffe_dataset.json'
     FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
-
-    with open(FEATURE_FILE_PATH) as data:
-        data_train = json.load(data)
-        data.close()
 
     eigenfaces = Eigenfaces(n_components=50)
     dataset = eigenfaces.prepare_data(FILE_PATH)
-    pca = eigenfaces.pca_data_test(dataset)
+    pca, train = eigenfaces.pca_data_test(dataset)
+    
+    datas = {
+        'eigenvectors': train.tolist(),
+        'label': dataset['label']
+    }
+
+    with open(DATASET_PATH + 'eigenfaces_jaffe_dataset.json', 'w') as outfile:
+        json.dump(datas, outfile)
+        outfile.close()
 
     svm = SupportVectorMachine()
-    classifier = svm.train(data_train)
+    classifier = svm.train(train, dataset['label'])
 
     return Response(generate(FaceDetection(), pca, classifier, svm),    mimetype='multipart/x-mixed-replace; boundary=frame')
 
