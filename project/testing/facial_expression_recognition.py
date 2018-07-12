@@ -43,6 +43,7 @@ y_pred = clf.predict(X_test_pca)
 
 print('Target prediksi :', y_test)
 print('Hasil prediksi :', y_pred.tolist())
+print()
 
 target_names = ['Netral', 'Bahagia', 'Sedih', 'Terkejut']
 print(classification_report(y_test, y_pred, target_names=target_names))

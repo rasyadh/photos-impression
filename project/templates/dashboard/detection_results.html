@@ -18,7 +18,12 @@
 <!-- result detection -->
 <section class="section">
     <div class="container" id="result_table">
-        <table class="table is-hoverable is-fullwidth">
+        <div class="buttons">
+            <span class="button is-info" onclick="show_result('#table_result')">Hasil Seluruh Percobaan</span>
+            <span class="button is-info" onclick="show_result('#chart_by_category')">Jumlah Percobaan per Kategori</span>
+        </div>
+        <canvas id="chart_by_category" style="display: none;"></canvas>
+        <table class="table is-hoverable is-fullwidth" id="table_result" style="display: none;">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -86,7 +91,36 @@
 
 <script>
     let detail, time, result;
+    let by_category = JSON.parse(`{{ by_category | tojson | safe }}`);
     let ctx = document.getElementById("chart_result").getContext("2d");
+    let ctx_cat = document.getElementById("chart_by_category").getContext("2d");
+    let active_show = null;
+    
+    active_show = '#table_result';
+    $(active_show).fadeToggle();
+
+    let chart_by_category = new Chart(ctx_cat, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(by_category),
+            datasets: [{
+                label: 'Kategori Foto',
+                data: Object.values(by_category),
+                steppedLine: true,
+                backgroundColor: 'rgba(32, 156, 233, 0.2)',
+                borderColor: 'rgba(32, 156, 233, 0.2)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 
     $(() => {
         detail_result = ((id, date, category) => {
@@ -140,6 +174,21 @@
             $('#detail_result_table').hide();
             $('#result_table').show();
         };
+
+        show_result = ((id) => {
+            if (active_show == null) {
+                active_show = id;
+            }
+            else if (active_show == id) {
+                active_show = null;
+            }
+            else {
+                $(active_show).fadeToggle();
+                active_show = null;
+                active_show = id;
+            }
+            $(id).fadeToggle();
+        });
     });
 </script>
 
