@@ -21,7 +21,7 @@ def index():
     if session.get('loggedin_admin'):
         try:
             photos = Photos.query.all()
-            impresi = { 2: 'bahagia', 3: 'sedih', 4: 'terkejut' }
+            impresi = { 1: 'bahagia', 2: 'sedih', 3: 'terkejut' }
             result, data = [], {}
 
             for p in photos:

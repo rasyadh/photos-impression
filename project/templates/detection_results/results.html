@@ -24,7 +24,6 @@
                     <th>No</th>
                     <th>ID</th>
                     <th>Waktu Percobaan</th>
-                    <th>Kategori Foto</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -34,9 +33,8 @@
                     <td>{{ results.index(res) + 1 }}</td>
                     <td>{{ res.id_result_detection }}</td>
                     <td>{{ res.created_at }}</td>
-                    <td>{{ res.category_photos }}</td>
                     <td>
-                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}', '{{ res.category_photos }}')">Detail</button>
+                        <button class="button is-info" onclick="detail_result('{{ res.id_result_detection }}', '{{ res.created_at }}')">Detail</button>
                     </td>
                 </tr>
                 {% endfor %} {% else %}
@@ -52,9 +50,6 @@
         <div class="columns">
             <div class="column">
                 <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
-            </div>
-            <div class="column">
-                <p class="subtitle" id="category"></p>
             </div>
             <div class="column">
                 <p class="subtitle" id="detection_date"></p>
@@ -102,7 +97,6 @@
 
                     create_chart(ctx, time, result);
                     $('#detection_date').html('Waktu Percobaan ' + date);
-                    $('#category').html('Kategori Foto ' + category);
                     $('#result_table').hide();
                     $('#detail_result_table').show();
                 }),

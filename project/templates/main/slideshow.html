@@ -6,7 +6,7 @@
     <div class="hero-body">
         <div class="container has-text-centered">
             <h1 class="title">
-                Percobaan dengan slideshow foto {{ category }}
+                Percobaan dengan slideshow foto
             </h1>
             <h2 class="subtitle">
                 Pilih tombol mulai disaat perekaman wajah telah berjalan.
@@ -32,7 +32,6 @@
     
     <form id="submit" action="/expression_detection/result/" method="post">
         <input type="hidden" name="id_res_det" value="{{ id_res_det }}">
-        <input type="hidden" name="category" value="{{ category }}">
         <input type="hidden" name="data" id="datajson">
         <input type="hidden" name="photos" id="photosjson">
     </form>

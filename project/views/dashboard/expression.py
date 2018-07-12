@@ -31,8 +31,7 @@ def index():
 def get_expression(id):
     try:
         expression = Expression.query.filter_by(id_expression=int(id)).first()
-
-        data = {}
+        
         data = {
             'id_expression': expression.id_expression,
             'expression_name': expression.expression_name
@@ -64,7 +63,6 @@ def edit_expression(id):
         try:
             expression = Expression.query.filter_by(id_expression=id).first()
             expression.expression_name = request.form.get('name')
-            expression.updated_at = datetime.datetime.now()
             db.session.commit()
         except Exception as e:
             print('error to update expression')

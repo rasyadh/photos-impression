@@ -113,7 +113,6 @@
                 type: "GET",
                 url: "/dashboard/expression/" + id,
                 success: ((response) => {
-                    console.log(response);
                     $('#form_edit').attr('action', '/dashboard/expression/edit/' + id);
                     $('#id_edit').attr('value', id);
                     $('#name_edit').attr('value', response.expression_name);
