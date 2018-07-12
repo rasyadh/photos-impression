@@ -132,7 +132,6 @@ def result_expression_detection():
                     db.session.add(detection_second)
                 db.session.commit()
         except Exception as e:
-            print('error to get detection result')
             print(e)
 
     return render_template('main/detection_result.html', 
