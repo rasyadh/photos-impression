@@ -18,36 +18,106 @@
 <!-- result detection -->
 <section class="section">
     <div class="container">
-        {% for key, value in trend.items() %} {% if value %}
-        <h1 class="subtitle">Tren foto {{ key }}</h1>
-        <table class="table is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Foto</th>
-                    <th>Kategori Foto</th>
-                    <th>Jumlah Ekspresi Terdeteksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for val in value %}
-                <tr>
-                    <td>{{ val.id_photo }}</td>
-                    <td>
-                        <img width="100" src="{{ val.photo_url }}">
-                    </td>
-                    <td>{{ val.result_expression }}</td>
-                    <td>{{ val.occurance }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <hr>
-        <br>
-        {% endif %}
-         {% endfor %}
+        <div class="tabs is-centered">
+            <ul>
+                <li class="is-active" id="tab-tren">
+                    <a onclick="tabs('tren')">Tren Foto</a>
+                </li>
+                <li id="tab-table">
+                    <a onclick="tabs('table')">Tabel Hasil</a>
+                </li>
+            </ul>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="table is-fullwidth" id="table" style="display:none;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th colspan="30" class="has-text-centered">Foto Percobaan</th>
+                        <th colspan="2">Hasil</th>
+                    </tr>
+                    <tr>
+                        <th>Pengguna</th>
+                        {% for i in htable %}
+                        <th>{{ i }}</th>
+                        {% endfor %}
+                        <th>Error</th>
+                        <th>Netral</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in table %}
+                    <tr>
+                        <td>{{ user['username'] }}</td>
+                        {% for i in user['data'] %}
+                            <td>{{ i }}</td>
+                        {% endfor %}
+                        <td>{{ user['error'] }}</td>
+                        <td>{{ user['netral'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        {% for i in total %}
+                        <th>{{ i }}</th>
+                        {% endfor %}
+                        <th colspan="2"></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="tren">
+            {% for key, value in trend.items() %} {% if value %}
+            <table class="table is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th colspan="4">Tren Foto {{ key }}</th>
+                    </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Foto</th>
+                        <th>Kategori Foto</th>
+                        <th>Jumlah Ekspresi Terdeteksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for val in value %}
+                    <tr>
+                        <td>{{ val.id_photo }}</td>
+                        <td>
+                            <img width="100" src="{{ val.photo_url }}">
+                        </td>
+                        <td>{{ val.result_expression }}</td>
+                        <td>{{ val.occurance }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+            <br> {% endif %} {% endfor %}
+        </div>
     </div>
 </section>
+
+<script>
+    let active_tab = 'tren';
+
+    $(() => {
+        tabs = ((tab) => {
+            if (tab != active_tab) {
+                $('#' + active_tab).toggle();
+                $('#tab-' + active_tab).toggleClass('is-active');
+                active_tab = tab;
+                $('#' + active_tab).toggle();
+                $('#tab-' + active_tab).toggleClass('is-active');
+            }
+        });
+    });
+</script>
 
 <!-- end yield content -->
 {% endblock %}

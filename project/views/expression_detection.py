@@ -10,11 +10,12 @@ from flask import (
     request,
     session
 )
+from project.globals import PHOTOS_SEQUENCE
 from sqlalchemy import desc
 from project.models import db
 from project.models.result_detection import ResultDetection
 from project.models.detection import Detection
-from project.models.detection_second import DetectionSecond
+from project.models.detection_photo import DetectionPhoto
 from project.models.photos import Photos
 
 detect = Blueprint('detect', __name__)
@@ -77,7 +78,9 @@ def generate_slide():
 
 @detect.route('/expression_detection/result/', methods=['POST'])
 def result_expression_detection():
-    time_dict, photos_dict, result = {}, {}, {}
+    time_dict = {}
+    per_photo_time = []
+    photos_dict = PHOTOS_SEQUENCE.copy()
 
     if request.method == 'POST':
         id_result_detection = request.form['id_res_det']
@@ -92,20 +95,26 @@ def result_expression_detection():
 
             if sec not in time_dict:
                 time_dict[sec] = [expression_result[i]['expression']]
-                photos_dict[sec] = expression_result[i]['id_photos']
             else:
                 time_dict[sec].append(expression_result[i]['expression'])
 
-        for key, value in time_dict.items():
-            if len(value) > 1:
+        for sec in range(1, 61):
+                if sec not in time_dict.keys():
+                    time_dict[sec] = [0]
+
+        for i in range(1, 61, 2):
+            per_photo_time.append(time_dict[i] + time_dict[i+1])
+
+        for i in range(len(photos_dict)):
+            if len(per_photo_time[i]) > 1:
                 temp = {}
-                unique = list(set(value))
-                
-                for i in unique:
-                    temp[i] = value.count(i)
-                    result[key] = max(temp.items(), key=operator.itemgetter(1))[0]
+                unique = list(set(per_photo_time[i]))
+
+                for j in unique:
+                    temp[j] = per_photo_time[i].count(j)
+                photos_dict[i]['expression'] = max(temp.items(), key=operator.itemgetter(1))[0]
             else:
-                result[key] = value[0]
+                photos_dict[i]['expression'] = per_photo_time[i][0]
 
         try:
             if expression_result:
@@ -120,16 +129,15 @@ def result_expression_detection():
                     db.session.add(detection)
                 db.session.commit()
             
-            if result:
-                for key, value in result.items():
-                    detection_second = DetectionSecond(
+            if photos_dict:
+                for photo in photos_dict:
+                    detection_photo = DetectionPhoto(
                         id_result_detection=id_result_detection,
-                        id_photo=int(photos_dict[key]),
-                        result_expression=int(value),
-                        time_detected=key
+                        id_photo=photo['id_photo'],
+                        result_expression=photo['expression']
                     )
 
-                    db.session.add(detection_second)
+                    db.session.add(detection_photo)
                 db.session.commit()
         except Exception as e:
             print(e)

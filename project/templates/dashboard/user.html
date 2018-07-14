@@ -34,7 +34,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.created_at }}</td>
                     <td>
-                        <button class="button is-info" onclick="detail_user('{{ user.id_user }}', '{{ user.created_at }}', '{{ user.username }}')">Detail</button>
+                        <button class="button is-info" onclick="expression('{{ user.id_user }}', '{{ user.username }}')">Ekspresi</button>
                     </td>
                 </tr>
                 {% endfor %} {% else %}
@@ -46,14 +46,13 @@
         </table>
     </div>
 
-    <!--
     <div class="container" id="detail_result_table" style="display: none;">
         <div class="columns">
             <div class="column">
                 <button class="button is-info" onclick="back()">Kembali ke hasil deteksi</button>
             </div>
             <div class="column">
-                <p class="subtitle" id="category"></p>
+                <p class="subtitle" id="username"></p>
             </div>
             <div class="column">
                 <p class="subtitle" id="detection_date"></p>
@@ -83,9 +82,65 @@
         </div>
         <canvas id="chart_result"></canvas>
     </div>
-    -->
 
 </section>
+
+<script>
+    let photo, result;
+    let ctx = document.getElementById("chart_result").getContext("2d");
+
+    $(() => {
+        expression = ((id, username) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/user/expression/" + id,
+                success: ((response) => {
+                    photo = response.data.map((obj) => obj.id_photo)
+                    result = response.data.map((obj) => obj.result_expression)
+
+                    create_chart(ctx, photo, result);
+                    $('#detection_date').html('Waktu Percobaan ' + response.date);
+                    $('#username').html('Pengguna : ' + username);
+                    $('#result_table').hide();
+                    $('#detail_result_table').show();
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        create_chart = (ctx, photo, result) => {
+            let chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: photo,
+                    datasets: [{
+                        label: 'Ekspresi per foto',
+                        data: result,
+                        steppedLine: true,
+                        backgroundColor: 'rgba(32, 156, 233, 0.2)',
+                        borderColor: 'rgba(32, 156, 233, 0.2)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        back = () => {
+            $('#detail_result_table').hide();
+            $('#result_table').show();
+            $('#chart_result').empty();
+        };
+    });
+</script>
 
 <!-- end yield content -->
 {% endblock %}

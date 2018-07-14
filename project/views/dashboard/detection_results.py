@@ -1,3 +1,4 @@
+import operator
 from flask import (
     Blueprint,
     render_template,
@@ -6,9 +7,11 @@ from flask import (
     session,
     jsonify
 )
+from project.globals import PHOTOS_SEQUENCE
 from project.models import db
 from project.models.result_detection import ResultDetection
 from project.models.detection import Detection
+from project.models.detection_photo import DetectionPhoto
 
 dashboard_results = Blueprint('dashboard_results', __name__)
 
@@ -16,7 +19,6 @@ dashboard_results = Blueprint('dashboard_results', __name__)
 def index():
     if session.get('loggedin_admin'):
         try:
-            #results = ResultDetection.query.all()
             result = db.engine.execute("SELECT rd.id_result_detection, rd.id_user, u.username, rd.created_at FROM result_detection rd, user u WHERE u.id_user = rd.id_user")
 
             results = []
@@ -79,7 +81,57 @@ def tes():
         result_detection = ResultDetection.query.all()
         print(result_detection)
 
-        # db.session.commit()
+        for res in result_detection:
+            detection = Detection.query.filter_by(id_result_detection=res.id_result_detection).all()
+
+            expression_result = []
+            for det in detection:
+                temp = {
+                    'time': str(det.time_detected),
+                    'expression': det.result_expression
+                }
+                expression_result.append(temp)
+
+            photos_dict = PHOTOS_SEQUENCE.copy()
+            time_dict = {}
+            per_photo_time = []
+
+            for i in range(len(expression_result)):
+                key = expression_result[i]['time'].split(".")
+                sec = int(key[0]) + 1
+
+                if sec not in time_dict:
+                    time_dict[sec] = [expression_result[i]['expression']]
+                else:
+                    time_dict[sec].append(expression_result[i]['expression'])
+
+            for sec in range(1, 61):
+                if sec not in time_dict.keys():
+                    time_dict[sec] = [0]
+
+            for i in range(1, 61, 2):
+                per_photo_time.append(time_dict[i] + time_dict[i+1])
+
+            for i in range(len(photos_dict)):
+                if len(per_photo_time[i]) > 1:
+                    temp = {}
+                    unique = list(set(per_photo_time[i]))
+
+                    for j in unique:
+                        temp[j] = per_photo_time[i].count(j)
+                    photos_dict[i]['expression'] = max(temp.items(), key=operator.itemgetter(1))[0]
+                else:
+                    photos_dict[i]['expression'] = per_photo_time[i][0]
+
+            for photo in photos_dict:
+                det_photo = DetectionPhoto(
+                    id_result_detection=res.id_result_detection,
+                    id_photo=photo['id_photo'],
+                    result_expression=photo['expression']
+                )
+                db.session.add(det_photo)
+
+            db.session.commit()
     except Exception as e:
         print(e)
 
