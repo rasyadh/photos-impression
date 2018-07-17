@@ -33,30 +33,35 @@ def index():
 
     return redirect(url_for('auth.login_admin'))
 
-@extraction.route('/dashboard/feature_extraction/read_dataset', methods=['GET'])
-def read_dataset():
-    print('read jaffe dataset...')
+@extraction.route('/dashboard/feature_extraction/read_dataset/<string:data>', methods=['GET'])
+def read_dataset(data):
+    print('read ' + data + ' dataset...')
 
     t0 = time()
-    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
+    DATASET_PATH = app.root_path + '\\static\image\dataset\\' + data + '\\'
 
     utils = FeatureDataset()
-    utils.read_jaffe_dataset(DATASET_PATH)
+    utils.read_dataset(DATASET_PATH, data)
 
     print("done in %0.5fs" % (time() - t0))
-    print("file dataset jafee and feature jaffe created")
+    print("file dataset and feature created")
 
     return redirect(url_for('extraction.index'))
 
-@extraction.route('/dashboard/feature_extraction/process', methods=['GET'])
-def process_feature():
-    print('process eigenfaces of jaffe dataset...')
+@extraction.route('/dashboard/feature_extraction/process/<string:idata>', methods=['GET'])
+def process_feature(idata):
+    print('process eigenfaces of ' + idata + ' dataset...')
 
     t0 = time()
-    DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
-    FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
+    DATASET_PATH = app.root_path + '\\static\image\dataset\\' + idata + '\\'
+    # DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
+    if idata == 'jaffe':
+        FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
+        eigenfaces = Eigenfaces(n_components=100)
+    else:
+        FILE_PATH = DATASET_PATH + 'feature_indonesia_dataset.json'
+        eigenfaces = Eigenfaces(n_components=30)
 
-    eigenfaces = Eigenfaces(n_components=50)
     data = eigenfaces.prepare_data(FILE_PATH)
     eigenvectors = eigenfaces.principle_component_analysis(data)
 
@@ -65,7 +70,7 @@ def process_feature():
         'label': data['label']
     }
 
-    with open(DATASET_PATH + 'eigenfaces_jaffe_dataset.json', 'w') as outfile:
+    with open(DATASET_PATH + 'eigenfaces_' + idata + '_dataset.json', 'w') as outfile:
         json.dump(datas, outfile)
         outfile.close()
 
@@ -73,13 +78,16 @@ def process_feature():
 
     return redirect(url_for('extraction.index'))
 
-@extraction.route('/dashboard/feature_extraction/features/')
-def show_feature():
-    data = None
-    DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/eigenfaces_jaffe_dataset.json'
+@extraction.route('/dashboard/feature_extraction/features/<string:data>')
+def show_feature(data):
+    datas = None
+    if data == 'jaffe':
+        DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/eigenfaces_jaffe_dataset.json'
+    else:
+        DATASET_FILE_PATH = 'project/static/image/dataset/indonesia/eigenfaces_indonesia_dataset.json'
     
     with open(DATASET_FILE_PATH) as f:
-        data = json.load(f)
+        datas = json.load(f)
         f.close()
 
-    return jsonify(data)
+    return jsonify(datas)

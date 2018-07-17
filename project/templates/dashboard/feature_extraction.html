@@ -19,26 +19,41 @@
 <!-- dataset facial expression -->
 <section class="section">
     <div class="container">
-        <h1 class="subtitle">Dataset JAFFE</h1>
         <div class="columns">
             <div class="column">
-                <button class="button is-primary" id="read-dataset">
-                    Baca Direktori Dataset
-                </button>
-                <button class="button is-warning" id="extract-dataset">
-                    Proses Ekstraksi Fitur
-                </button>
-                <button class="button is-warning" id="extract2-dataset" style="display: none">
-                    Proses Ekstraksi Fitur Cara 2
-                </button>
-                <button class="button is-info" id="show-feature">
-                    Tampilkan Hasil Fitur
-                </button>
-                <button class="button is-info" id="show-feature2" style="display: none">
-                    Tampilkan Hasil Fitur Cara 2
-                </button>
+                <h1 class="subtitle">Dataset JAFFE</h1>
+                <div class="columns">
+                    <div class="column">
+                        <button class="button is-primary" onclick="read_dataset('jaffe')">
+                            Baca Direktori Dataset
+                        </button>
+                        <button class="button is-warning" onclick="extract_dataset('jaffe')">
+                            Proses Ekstraksi Fitur
+                        </button>
+                        <button class="button is-info" onclick="show_feature('jaffe')">
+                            Tampilkan Hasil Fitur
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h1 class="subtitle">Dataset Indonesia</h1>
+                <div class="columns">
+                    <div class="column">
+                        <button class="button is-primary" onclick="read_dataset('indonesia')">
+                            Baca Direktori Dataset
+                        </button>
+                        <button class="button is-warning" onclick="extract_dataset('indonesia')">
+                            Proses Ekstraksi Fitur
+                        </button>
+                        <button class="button is-info" onclick="show_feature('indonesia')">
+                            Tampilkan Hasil Fitur
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="columns">
             <div class="column">
                 <div class="tabs is-centered">
@@ -74,10 +89,10 @@
 
 <script>
     $(() => {
-        $('#read-dataset').click(() => {
+        read_dataset = ((url) => {
             $.ajax({
                 type: "GET",
-                url: "/dashboard/feature_extraction/read_dataset",
+                url: "/dashboard/feature_extraction/read_dataset/" + url,
                 beforeSend: (() => {
                     $('#modal-loading').addClass('is-active');
                 }),
@@ -95,10 +110,10 @@
             });
         });
 
-        $('#extract-dataset').click(() => {
+        extract_dataset = ((url) => {
             $.ajax({
                 type: "GET",
-                url: "/dashboard/feature_extraction/process",
+                url: "/dashboard/feature_extraction/process/" + url,
                 beforeSend: (() => {
                     $('#modal-loading').addClass('is-active');
                 }),
@@ -116,8 +131,8 @@
             });
         });
 
-        $('#show-feature').click(() => {
-            window.open('/dashboard/feature_extraction/features', '_blank');
+        show_feature = ((url) => {
+            window.open('/dashboard/feature_extraction/features/' + url, '_blank');
         });
     });
 

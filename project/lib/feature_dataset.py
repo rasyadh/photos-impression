@@ -35,14 +35,15 @@ class FeatureDataset:
 
         return face
 
-    def get_feature_jaffe(self, DATASET_PATH, FILE_PATH, size):
+    def get_feature(self, DATASET_PATH, FILE_PATH, size, i_dataset):
         with open(FILE_PATH) as dataset:
-            jaffe_data = json.load(dataset)
+            i_data = json.load(dataset)
             dataset.close()
 
         feature, target, classes = [], [], []
-        for index in jaffe_data:
-            for image in jaffe_data[index]:
+        for index in i_data:
+            for image in i_data[index]:
+                print(image)
                 face = None
                 face = self.get_faces(image['url'], size)
                 face = face.flatten()
@@ -59,12 +60,15 @@ class FeatureDataset:
             'shape': size
         }
 
-        with open(DATASET_PATH + 'feature_jaffe_dataset.json', 'w') as outfile:
+        with open(DATASET_PATH + 'feature_' + i_dataset + '_dataset.json', 'w') as outfile:
             json.dump(dataset, outfile)
             outfile.close()
 
-    def read_jaffe_dataset(self, DATASET_PATH):
-        FILE_PATH = DATASET_PATH + 'dataset_jaffe.json'
+    def read_dataset(self, DATASET_PATH, dataset):
+        if dataset == 'jaffe':
+            FILE_PATH = DATASET_PATH + 'dataset_jaffe.json'
+        else:
+            FILE_PATH = DATASET_PATH + 'dataset_indonesia.json'
         result, data = {}, []
 
         try:
@@ -84,7 +88,7 @@ class FeatureDataset:
                         temp = {}
                         temp = {
                             'name': filename,
-                            'url': 'project/static/image/dataset/jaffe/' + subdirname + '/' + filename,
+                            'url': 'project/static/image/dataset/' + dataset + '/' + subdirname + '/' + filename,
                             'id_expression': id_expression
                         }
 
@@ -93,11 +97,10 @@ class FeatureDataset:
                     result[subdirname] = data
                     data = []
         except Exception as e:
-            print('error at read_jaffe_dataset in utils')
             print(e)
 
         with open(FILE_PATH, 'w') as outfile:
             json.dump(result, outfile)
             outfile.close()
 
-        self.get_feature_jaffe(DATASET_PATH, FILE_PATH, 50)
+        self.get_feature(DATASET_PATH, FILE_PATH, 120, dataset)

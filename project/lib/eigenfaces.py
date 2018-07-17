@@ -11,6 +11,7 @@ class Eigenfaces:
         self.n_components = n_components
 
     def prepare_data(self, FILE_PATH):
+        print('prepare data')
         with open(FILE_PATH) as feature_data:
             feature_jaffe = json.load(feature_data)
             feature_data.close()
@@ -38,7 +39,7 @@ class Eigenfaces:
         ).fit(datas['data'])
 
         eigenfaces = pca.components_.reshape((
-            self.n_components, datas['shape'], datas['shape']
+            self.n_components, 120, 120
         ))
 
         print("projecting the input data on the eigenfaces orhonormal basis")
@@ -54,7 +55,7 @@ class Eigenfaces:
         ).fit(dataset['data'])
 
         eigenfaces = pca.components_.reshape((
-            self.n_components, 50, 50
+            self.n_components, 120, 120
         ))
 
         eigenvectors_train = pca.transform(dataset['data'])
