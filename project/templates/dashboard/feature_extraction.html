@@ -19,6 +19,36 @@
 <!-- dataset facial expression -->
 <section class="section">
     <div class="container">
+        <h1 class="subtitle">Landmark Wajah</h1>
+        <div class="columns">
+            <div class="column">
+                <h1 class="subtitle">Dataset JAFFE</h1>
+                <div class="columns">
+                    <div class="column">
+                        <button class="button is-primary" onclick="extract_landmark('jaffe')">
+                            Ekstraksi Fitur Landmark Wajah
+                        </button>
+                        <button class="button is-info" onclick="show_landmark('jaffe')">
+                            Tampilkan Hasil Fitur
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h1 class="subtitle">Dataset Indonesia</h1>
+                <div class="columns">
+                    <div class="column">
+                        <button class="button is-primary" onclick="extract_landmark('indonesia')">
+                            Ekstraksi Fitur Landmark Wajah
+                        </button>
+                        <button class="button is-info" onclick="show_landmark('indonesia')">
+                            Tampilkan Hasil Fitur
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 class="subtitle">Metode Eigenfaces</h1>
         <div class="columns">
             <div class="column">
                 <h1 class="subtitle">Dataset JAFFE</h1>
@@ -133,6 +163,31 @@
 
         show_feature = ((url) => {
             window.open('/dashboard/feature_extraction/features/' + url, '_blank');
+        });
+
+        extract_landmark = ((url) => {
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/feature_extraction/landmark/" + url,
+                beforeSend: (() => {
+                    $('#modal-loading').addClass('is-active');
+                }),
+                success: ((response) => {
+                    $('#modal-loading').removeClass('is-active');
+                    swal({
+                        title: "Ekstraksi fitur berhasil",
+                        icon: "success"
+                    })
+                        .then((value) => {
+                            location.reload();
+                        });
+                }),
+                error: ((error) => console.log(error))
+            });
+        });
+
+        show_landmark = ((url) => {
+            window.open('/dashboard/feature_extraction/features_landmark/' + url, '_blank');
         });
     });
 

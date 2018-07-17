@@ -14,7 +14,8 @@ class SupportVectorMachine:
         }
         
         clf = GridSearchCV(SVC(
-            kernel='rbf', class_weight='balanced'), param_grid)
+            kernel='linear', class_weight='balanced'), param_grid)
+            
         #clf = clf.fit(data['eigenvectors'], data['label'])
         clf = clf.fit(data, label)
 

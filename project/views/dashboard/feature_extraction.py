@@ -10,6 +10,7 @@ from flask import (
 )
 from project import app
 from project.lib.feature_dataset import FeatureDataset
+from project.lib.feature_landmark import FeatureLandmark
 from project.lib.eigenfaces import Eigenfaces
 
 extraction = Blueprint('extraction', __name__)
@@ -85,6 +86,35 @@ def show_feature(data):
         DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/eigenfaces_jaffe_dataset.json'
     else:
         DATASET_FILE_PATH = 'project/static/image/dataset/indonesia/eigenfaces_indonesia_dataset.json'
+    
+    with open(DATASET_FILE_PATH) as f:
+        datas = json.load(f)
+        f.close()
+
+    return jsonify(datas)
+
+@extraction.route('/dashboard/feature_extraction/landmark/<string:dataset>')
+def extract_landmark(dataset):
+    print('read ' + dataset + ' dataset...')
+
+    t0 = time()
+    DATASET_PATH = app.root_path + '\\static\image\dataset\\' + dataset + '\\'
+
+    utils = FeatureLandmark()
+    utils.read_dataset(DATASET_PATH, dataset)
+
+    print("done in %0.5fs" % (time() - t0))
+    print("file dataset and feature created")
+
+    return redirect(url_for('extraction.index'))
+
+@extraction.route('/dashboard/feature_extraction/features_landmark/<string:dataset>')
+def show_feature_landmark(dataset):
+    datas = None
+    if dataset == 'jaffe':
+        DATASET_FILE_PATH = 'project/static/image/dataset/jaffe/feature_landmark_jaffe_dataset.json'
+    else:
+        DATASET_FILE_PATH = 'project/static/image/dataset/indonesia/feature_landmark_indonesia_dataset.json'
     
     with open(DATASET_FILE_PATH) as f:
         datas = json.load(f)
