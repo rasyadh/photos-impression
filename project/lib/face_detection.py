@@ -21,7 +21,7 @@ class FaceDetection(object):
         return (x, y, w, h)
 
     def get_frame(self):
-        face, size = None, 50
+        face, size = None, 120
         success, frame = self.capture.read()
 
         if success:

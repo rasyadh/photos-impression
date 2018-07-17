@@ -35,6 +35,33 @@ class FeatureDataset:
 
         return face
 
+    def get_normal_feature(self, DATASET_PATH, FILE_PATH, size, i_dataset):
+        with open(FILE_PATH) as dataset:
+            i_data = json.load(dataset)
+            dataset.close()
+
+        feature, target, classes = [], [], []
+        for index in i_data:
+            for image in i_data[index]:
+                face = None
+                face = self.get_faces(image['url'], size)
+
+                feature.append(face.tolist())
+                target.append(image['id_expression'])
+
+            classes.append(index)
+
+        dataset = {
+            'data': feature,
+            'target': target,
+            'classes': classes,
+            'shape': size
+        }
+
+        with open(DATASET_PATH + 'normal_feature_' + i_dataset + '_dataset.json', 'w') as outfile:
+            json.dump(dataset, outfile)
+            outfile.close()
+
     def get_feature(self, DATASET_PATH, FILE_PATH, size, i_dataset):
         with open(FILE_PATH) as dataset:
             i_data = json.load(dataset)
@@ -104,3 +131,4 @@ class FeatureDataset:
             outfile.close()
 
         self.get_feature(DATASET_PATH, FILE_PATH, 120, dataset)
+        # self.get_normal_feature(DATASET_PATH, FILE_PATH, 120, dataset)

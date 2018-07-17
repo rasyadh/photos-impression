@@ -57,7 +57,7 @@ def process_feature(idata):
     # DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
     if idata == 'jaffe':
         FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
-        eigenfaces = Eigenfaces(n_components=100)
+        eigenfaces = Eigenfaces(n_components=50)
     else:
         FILE_PATH = DATASET_PATH + 'feature_indonesia_dataset.json'
         eigenfaces = Eigenfaces(n_components=30)

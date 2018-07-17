@@ -15,8 +15,11 @@ stream = Blueprint('stream', __name__)
 def feed_stream():
     DATASET_PATH = app.root_path + '\\static\image\dataset\jaffe\\'
     FILE_PATH = DATASET_PATH + 'feature_jaffe_dataset.json'
+    # DATASET_PATH = app.root_path + '\\static\image\dataset\indonesia\\'
+    # FILE_PATH = DATASET_PATH + 'feature_indonesia_dataset.json'
 
     eigenfaces = Eigenfaces(n_components=50)
+    # eigenfaces = Eigenfaces(n_components=30)
     dataset = eigenfaces.prepare_data(FILE_PATH)
     pca, train = eigenfaces.pca_data_test(dataset)
     
@@ -35,7 +38,7 @@ def feed_stream():
     return Response(generate(FaceDetection(), pca, classifier, svm),    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate(detect, pca, classifier, svm):
-    while True: 
+    while True:     
         feature_test = []
         result_expression = []
         face = None
