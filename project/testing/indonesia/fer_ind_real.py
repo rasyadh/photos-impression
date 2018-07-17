@@ -21,13 +21,9 @@ y_train = data["target"]
 
 img_tes = [
     "ha1.jpg",
-    "ha2.jpg",
     "ne1.jpg",
-    "ne2.jpg",
     "sa1.jpg",
-    "sa2.jpg",
-    "su1.jpg",
-    "su2.jpg"
+    "su1.jpg"
 ]
 expr_tes = [1, 1, 0, 0, 2, 2, 3, 3]
 X_test, y_test = [], []
@@ -75,6 +71,7 @@ print(classification_report(y_test, y_pred, target_names=target_names))
 n_classes = len(target_names)
 print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
 
+'''
 # Qualitative evaluation of the predictions using matplotlib
 def plot_gallery(images, titles, h, w, n_row=2, n_col=4):
     """Helper function to plot a gallery of portraits"""
@@ -103,3 +100,4 @@ eigenface_titles = ["eigenface %d" % i for i in range(eigenfaces.shape[0])]
 plot_gallery(eigenfaces, eigenface_titles, 120, 120)
 
 plt.show()
+'''
