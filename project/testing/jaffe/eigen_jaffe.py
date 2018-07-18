@@ -23,7 +23,7 @@ print('Jumlah data testing :', len(X_test))
 print('y data training :', y_train)
 print('y data test :', y_test)
 
-n_components = 90
+n_components = 50
 pca = PCA(svd_solver='randomized', n_components=n_components, whiten=True).fit(X_train)
 eigenfaces = pca.components_.reshape((n_components, 120, 120))
 X_train_pca = pca.transform(X_train)
@@ -50,7 +50,7 @@ n_classes = len(target_names)
 print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
 
 # Qualitative evaluation of the predictions using matplotlib
-def plot_gallery(images, titles, h, w, n_row=3, n_col=7):
+def plot_gallery(images, titles, h, w, n_row=4, n_col=7):
     """Helper function to plot a gallery of portraits"""
     plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
     plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)

@@ -19,39 +19,10 @@
 <!-- dataset facial expression -->
 <section class="section">
     <div class="container">
-        <h1 class="subtitle">Landmark Wajah</h1>
+        <h1 class="subtitle">Dataset JAFFE</h1>
         <div class="columns">
             <div class="column">
-                <h1 class="subtitle">Dataset JAFFE</h1>
-                <div class="columns">
-                    <div class="column">
-                        <button class="button is-primary" onclick="extract_landmark('jaffe')">
-                            Ekstraksi Fitur Landmark Wajah
-                        </button>
-                        <button class="button is-info" onclick="show_landmark('jaffe')">
-                            Tampilkan Hasil Fitur
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="column">
-                <h1 class="subtitle">Dataset Indonesia</h1>
-                <div class="columns">
-                    <div class="column">
-                        <button class="button is-primary" onclick="extract_landmark('indonesia')">
-                            Ekstraksi Fitur Landmark Wajah
-                        </button>
-                        <button class="button is-info" onclick="show_landmark('indonesia')">
-                            Tampilkan Hasil Fitur
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <h1 class="subtitle">Metode Eigenfaces</h1>
-        <div class="columns">
-            <div class="column">
-                <h1 class="subtitle">Dataset JAFFE</h1>
+                <h1 class="subtitle">Metode Eigenfaces</h1>
                 <div class="columns">
                     <div class="column">
                         <button class="button is-primary" onclick="read_dataset('jaffe')">
@@ -67,16 +38,13 @@
                 </div>
             </div>
             <div class="column">
-                <h1 class="subtitle">Dataset Indonesia</h1>
+                <h1 class="subtitle">Facial Landmark</h1>
                 <div class="columns">
                     <div class="column">
-                        <button class="button is-primary" onclick="read_dataset('indonesia')">
-                            Baca Direktori Dataset
+                        <button class="button is-primary" onclick="extract_landmark('jaffe')">
+                            Ekstraksi Fitur Landmark Wajah
                         </button>
-                        <button class="button is-warning" onclick="extract_dataset('indonesia')">
-                            Proses Ekstraksi Fitur
-                        </button>
-                        <button class="button is-info" onclick="show_feature('indonesia')">
+                        <button class="button is-info" onclick="show_landmark('jaffe')">
                             Tampilkan Hasil Fitur
                         </button>
                     </div>
