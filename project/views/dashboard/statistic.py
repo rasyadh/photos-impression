@@ -16,7 +16,7 @@ statistic = Blueprint('statistic', __name__)
 def index():
     if session.get('loggedin_admin'):
         try:
-            result_trend = db.engine.execute("SELECT d.id_photo, p.photo_url, d.result_expression, COUNT(d.id_photo) FROM detection d, photos p WHERE d.id_photo = p.id_photo GROUP BY d.id_photo, d.result_expression")
+            result_trend = db.engine.execute("SELECT dp.id_photo, p.photo_url, dp.result_expression, COUNT(dp.id_photo) FROM detection_photo dp, photos p WHERE dp.id_photo = p.id_photo GROUP BY dp.id_photo, dp.result_expression")
 
             trend = create_trend(result_trend)
 
@@ -36,7 +36,7 @@ def index():
     return redirect(url_for('auth.login_admin'))
 
 def create_trend(result):
-    expression = { 1: 'Bahagia', 2: 'Sedih', 3: 'Terkejut' }
+    expression = {0: 'Netral', 1: 'Bahagia', 2: 'Sedih', 3: 'Terkejut' }
     data = {
             "netral": [],
             "bahagia": [],
@@ -63,7 +63,7 @@ def create_trend(result):
         temp = {}
 
     trend = {
-        "netral": sorted(data["netral"], key=itemgetter('occurance'), reverse=True)[:5],
+        #"netral": sorted(data["netral"], key=itemgetter('occurance'), reverse=True)[:5],
         "bahagia": sorted(data["bahagia"], key=itemgetter('occurance'), reverse=True)[:5],
         "sedih": sorted(data["sedih"], key=itemgetter('occurance'), reverse=True)[:5],
         "terkejut": sorted(data["terkejut"], key=itemgetter('occurance'), reverse=True)[:5]
