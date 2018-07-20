@@ -21,8 +21,15 @@ with open(DATASET_FILE_PATH) as f:
     data = json.load(f)
     f.close()
 
-X_test = data['data']
-y_test = data['target']
+X_test = [
+    data["data"][0], data["data"][1],
+    data["data"][10], data["data"][11],
+    data["data"][20], data["data"][21],
+    data["data"][30], data["data"][31]
+]
+y_test = [1, 1, 0, 0, 2, 2, 3, 3]
+# X_test = data['data']
+# y_test = data['target']
 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 '''

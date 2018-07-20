@@ -24,8 +24,13 @@ with open(DATASET_INDO_PATH) as f:
     data = json.load(f)
     f.close()
 
-X_test = data["data"]
-y_test = data["target"]
+X_test = [
+    data["data"][0], data["data"][1],
+    data["data"][10], data["data"][11],
+    data["data"][20], data["data"][21],
+    data["data"][30], data["data"][31]
+]
+y_test = [1, 1, 0, 0, 2, 2, 3, 3]
 
 n_components = 100
 pca = PCA(svd_solver='randomized', n_components=n_components, whiten=True).fit(X_train)
@@ -37,7 +42,7 @@ param_grid = {
     'C': [1e3, 5e3, 1e4, 5e4, 1e5],
     'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1]
 }
-clf = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid)
+clf = GridSearchCV(SVC(kernel='linear', class_weight='balanced'), param_grid)
 clf = clf.fit(X_train_pca, y_train)
 print(clf.best_estimator_)
 
@@ -54,15 +59,16 @@ n_classes = len(target_names)
 print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
 
 # Qualitative evaluation of the predictions using matplotlib
-def plot_gallery(images, titles, h, w, n_row=4, n_col=5):
+def plot_gallery(images, titles, h, w, n_row=2, n_col=4):
     """Helper function to plot a gallery of portraits"""
     plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
     plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
-    plt.subplot(n_row, n_col, 1)
-    plt.imshow(images[0].reshape((h, w)), cmap=plt.cm.gray)
-    plt.title(titles[0], size=12)
-    plt.xticks(())
-    plt.yticks(())
+    for i in range(n_row * n_col):
+        plt.subplot(n_row, n_col, i + 1)
+        plt.imshow(images[i].reshape((h, w)), cmap=plt.cm.gray)
+        plt.title(titles[i], size=12)
+        plt.xticks(())
+        plt.yticks(())
 
 # plot the result of the prediction on a portion of the test set
 def title(y_pred, y_test, target_names, i):
@@ -74,9 +80,5 @@ prediction_titles = [title(y_pred, y_test, target_names, i)
                      for i in range(y_pred.shape[0])]
 
 plot_gallery(np.asarray(X_test), prediction_titles, 120, 120)
-
-# plot the gallery of the most significative eigenfaces
-eigenface_titles = ["eigenface %d" % i for i in range(eigenfaces.shape[0])]
-plot_gallery(eigenfaces, eigenface_titles, 120, 120)
 
 plt.show()
