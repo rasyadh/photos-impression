@@ -91,17 +91,20 @@ def detect_expression(detect, classifier, svm):
         frame, feature = detect.get_landmark()
 
         if feature is not None:
-            normal = Normalization()
-            feature = normal.normalize(feature)
-            feature_test.append(feature)
+            try:
+                normal = Normalization()
+                feature = normal.normalize(feature)
+                feature_test.append(feature)
 
-            label_pred = svm.predict(classifier, feature_test)[0]
+                label_pred = svm.predict(classifier, feature_test)[0]
 
-            print("expression : {0}".format(label_pred))
+                print("expression : {0}".format(label_pred))
 
-            result_expression.append(label_pred)
+                result_expression.append(label_pred)
 
-            requests.get("http://localhost:3000/kirimData?data="+json.dumps(result_expression, indent=4, default=str)).json()
+                requests.get("http://localhost:3000/kirimData?data="+json.dumps(result_expression, indent=4, default=str)).json()
+            except Exception as e:
+                print(e)
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' 
             + frame + b'\r\n')

@@ -72,10 +72,8 @@ prediction_titles = [title(y_pred, y_test, target_names, i)
 
 plot_gallery(np.asarray(X_test), prediction_titles, 120, 120)
 
-'''
 # plot the gallery of the most significative eigenfaces
 eigenface_titles = ["eigenface %d" % i for i in range(eigenfaces.shape[0])]
 plot_gallery(eigenfaces, eigenface_titles, 120, 120)
-'''
 
 plt.show()

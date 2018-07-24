@@ -32,7 +32,7 @@ X_test = [
 ]
 y_test = [1, 1, 0, 0, 2, 2, 3, 3]
 
-n_components = 100
+n_components = 50
 pca = PCA(svd_solver='randomized', n_components=n_components, whiten=True).fit(X_train)
 eigenfaces = pca.components_.reshape((n_components, 120, 120))
 X_train_pca = pca.transform(X_train)

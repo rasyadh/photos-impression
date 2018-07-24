@@ -72,9 +72,8 @@ print(classification_report(y_test, y_pred, target_names=target_names))
 n_classes = len(target_names)
 print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
 
-'''
 # Qualitative evaluation of the predictions using matplotlib
-def plot_gallery(images, titles, h, w, n_row=4, n_col=7):
+def plot_gallery(images, titles, h, w, n_row=2, n_col=4):
     """Helper function to plot a gallery of portraits"""
     plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
     plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
@@ -91,14 +90,23 @@ def title(y_pred, y_test, target_names, i):
     true_name = target_names[y_test[i]].rsplit(' ', 1)[-1]
     return 'predicted: %s\ntrue:      %s' % (pred_name, true_name)
 
-prediction_titles = [title(y_pred, y_test_mark, target_names, i) for i in range(y_pred.shape[0])]
+prediction_titles = [title(y_pred, y_test, target_names, i) for i in range(y_pred.shape[0])]
 
 photo_test = []
-for i in indeks_test:
+photos = [
+    'project/static/image/dataset/indonesia/HA/HA_01.jpg',
+    'project/static/image/dataset/indonesia/HA/HA_02.jpg',
+    'project/static/image/dataset/indonesia/NE/NE_01.jpg',
+    'project/static/image/dataset/indonesia/NE/NE_02.jpg',
+    'project/static/image/dataset/indonesia/SA/SA_01.jpg',
+    'project/static/image/dataset/indonesia/SA/SA_02.jpg',
+    'project/static/image/dataset/indonesia/SU/SU_01.jpg',
+    'project/static/image/dataset/indonesia/SU/SU_02.jpg'
+]
+for i in range(len(photos)):
     image = cv2.imread('../../../' + photos[i], 0)
     photo_test.append(image)
 
 plot_gallery(photo_test, prediction_titles, 120, 120)
 
 plt.show()
-'''
