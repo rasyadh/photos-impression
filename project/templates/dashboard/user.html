@@ -30,7 +30,7 @@
             <tbody>
                 {% if users %} {% for user in users %}
                 <tr>
-                    <td>{{ user.id_user }}</td>
+                    <td>{{ users.index(user) + 1 }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.created_at }}</td>
                     <td>
